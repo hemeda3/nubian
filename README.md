@@ -1,21 +1,23 @@
-# Nubian
+<img width="170" height="150" alt="Nubian logo" src="https://github.com/user-attachments/assets/1975c24b-013e-42e8-a70e-3cf1b279141a" />
+
+# Nubian (WIP)
 **Autonomous computer-use agent**
 
 Most agents read the page. Nubian watches the screen. It skips a11y, CDP, and CodeAct, and uses vision and a virtual keyboard instead. The same channel a person uses. Today it drives LibreOffice Calc, Writer, Chrome, terminals, and the file manager. The target is to do the same in GIMP, Photoshop, and Blender, where no DOM or accessibility tree exists.
 
-<video src="docs/nubian-demo.mp4" poster="docs/nubian-demo-poster.jpg" controls width="100%"></video>
+https://github.com/user-attachments/assets/8aff5544-69db-4354-b133-8c14052be350
 
-<video src="docs/nubian-gimp-demo.mp4" poster="docs/nubian-gimp-poster.jpg" controls width="100%"></video>
+https://github.com/user-attachments/assets/d446d710-7ce6-4ec6-976b-ad0c52d56b92
 
-![Nubian completing a job application end to end](docs/main-nubian.png)
+<img width="1536" height="1024" alt="Nubian completing a job application end to end" src="https://github.com/user-attachments/assets/317ee717-eaef-46e6-8b4c-c57d19d65f72" />
 
 *Above: Nubian finishing a real online job application end to end. Left pane is the live reasoning trace; right pane is the agent's Ubuntu desktop. Along the way it wrote the cover letter in LibreOffice Writer, downloaded the required files, filled the form fields, and reached the "successfully applied" confirmation.*
 
 Architecture at a glance:
 
-![Nubian Agent — architecture](docs/NubianAgentV2.png)
+<img width="1728" height="992" alt="Nubian Agent — architecture" src="https://github.com/user-attachments/assets/4b161f3c-ee7f-4ca7-ae29-cfc9d4cdb64c" />
 
-Full breakdown: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · detailed SVG: [`docs/architecture-detailed.svg`](docs/architecture-detailed.svg)
+Full breakdown: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 
 ---
 

@@ -34,12 +34,12 @@ services:
     restart: unless-stopped
 
   # Application infra dependencies (required by the Spring Boot agent).
+  # Bound to 127.0.0.1 only — never expose default-credential brokers to the LAN.
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: nubian-rabbitmq
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"   # mgmt UI, localhost only
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
@@ -48,9 +48,8 @@ services:
 
   redis:
     image: redis:latest
-    container_name: nubian-redis
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
 
 volumes:
   rabbitmq_data:

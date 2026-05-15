@@ -3177,9 +3177,11 @@
     async function autoBootIfNeeded() {
       const attached = await attachExistingSession();
       if (attached) return;
-      // Only auto-boot when the URL explicitly asks for a provider —
-      // otherwise show the Start buttons so the operator picks.
-      if (!requestedProviderId()) return;
+      // No provider in URL → default to computer-agent (matches the
+      // recommended sandbox in deployment/README.md).
+      if (!requestedProviderId()) {
+        state.forcedProviderId = 'computer-agent';
+      }
       await createSession();
     }
 
@@ -3398,10 +3400,10 @@
       });
     }
 
-    /* When ?provider=<id> is present, hide the Start buttons for other providers. */
+    /* Show only the Start button for the active provider. URL ?provider= wins;
+       otherwise default to computer-agent (matches deployment/README.md). */
     (function filterProviderButtons() {
-      const wanted = requestedProviderId();
-      if (!wanted) return;
+      const wanted = requestedProviderId() || 'computer-agent';
       const map = {
         'firecracker': els.createFlyvmBtn,
         'computer-agent': els.createComputerAgentBtn,

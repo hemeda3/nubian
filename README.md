@@ -15,6 +15,12 @@ Most agents read the page. Nubian watches the screen. It skips a11y, CDP, and Co
 
 Full breakdown: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 
+> **⚠ Heads-up — you need a GPU running UI-TARS-1.5-7B for accurate clicks.**
+> - Rent any GPU VM (~$0.20/hr on vast.ai, or RunPod / GCP / Hetzner)
+> - Serve UI-TARS via vLLM on a reachable port (see [`deployment/GROUNDER_DEPLOY.md`](deployment/GROUNDER_DEPLOY.md))
+> - Point `nubian.uground.base-url` at it
+> - Or set `nubian.uground.enabled=false` to run without grounded clicks (degraded mode)
+
 ---
 
 ## Architecture

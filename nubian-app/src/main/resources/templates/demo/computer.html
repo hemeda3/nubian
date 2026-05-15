@@ -1,0 +1,3503 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nubian · Computer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-canvas:      #0c0d0f;
+      --bg-app:         #111316;
+      --bg-surface:     #16181c;
+      --bg-elevated:    #1b1e23;
+      --bg-input:       #1f2329;
+      --bg-hover:       #23272d;
+      --border:         #24272d;
+      --border-strong:  #2e323a;
+      --text-primary:   #ece9e1;
+      --text-secondary: #98989a;
+      --text-tertiary:  #65676b;
+      --text-disabled:  #44464a;
+      --accent:         #d6a25b;
+      --accent-soft:    rgba(214, 162, 91, .14);
+      --accent-line:    rgba(214, 162, 91, .35);
+      --success:        #6cb78a;
+      --success-soft:   rgba(108, 183, 138, .12);
+      --danger:         #d57b6f;
+      --danger-soft:    rgba(213, 123, 111, .14);
+      --info:           #7da2c8;
+      --info-soft:      rgba(125, 162, 200, .12);
+      --warn:           #d6a25b;
+      --warn-soft:      rgba(214, 162, 91, .14);
+      --thought:        #b896d4;
+      --thought-soft:   rgba(184, 150, 212, .12);
+      --header-h:       44px;
+      --tabbar-h:       40px;
+      --footer-h:       42px;
+      --resizer-w:      4px;
+      --radius-sm:      6px;
+      --radius:         8px;
+      --radius-lg:      12px;
+      --shadow:         0 12px 40px rgba(0, 0, 0, .35);
+      --font-sans:      'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
+      --font-mono:      'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      --font-serif:     'Instrument Serif', ui-serif, Georgia, serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-canvas);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      line-height: 1.5;
+      letter-spacing: -0.005em;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      overflow: hidden;
+    }
+    button, textarea, input { font-family: inherit; color: inherit; }
+    a { color: var(--info); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+    /* ---------- App shell ---------- */
+    .app {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      grid-template-rows: var(--header-h) 1fr;
+      background: var(--bg-canvas);
+    }
+
+    /* ---------- Top header ---------- */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #131518 0%, #101115 100%);
+      user-select: none;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+      font-size: 13px;
+    }
+    .brand-mark {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: radial-gradient(circle at 30% 30%, #f0c280 0%, #b97a2c 60%, #5e3a0e 100%);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.06), inset 0 1px 0 rgba(255,255,255,.18);
+      position: relative;
+    }
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border-radius: 4px;
+      background: rgba(0,0,0,.55);
+    }
+    .brand-name { letter-spacing: -0.01em; }
+    .brand-name em {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+      margin-left: 2px;
+    }
+
+    .header-pills {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 26px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+    .pill .pill-key { color: var(--text-tertiary); }
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--text-tertiary);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.02);
+    }
+    .pill-dot.idle    { background: var(--text-tertiary); }
+    .pill-dot.running { background: var(--accent); animation: pulse 1.6s ease-in-out infinite; }
+    .pill-dot.done    { background: var(--success); }
+    .pill-dot.failed  { background: var(--danger); }
+    .pill-dot.cancelled { background: var(--accent); }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(214,162,91,.55); }
+      50%      { box-shadow: 0 0 0 5px rgba(214,162,91,0); }
+    }
+
+    /* ---------- Split shell ---------- */
+    .split {
+      display: grid;
+      grid-template-columns: var(--left-w, 480px) var(--resizer-w) 1fr;
+      min-height: 0;
+      min-width: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+    .left, .right {
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .left  { background: var(--bg-app); }
+    .right { background: var(--bg-canvas); border-left: 1px solid var(--border); }
+
+    .resizer {
+      position: relative;
+      width: var(--resizer-w);
+      cursor: col-resize;
+      background: var(--border);
+      transition: background .12s ease;
+    }
+    .resizer::before {
+      content: "";
+      position: absolute;
+      inset: 0 -3px;
+    }
+    .resizer:hover, .resizer.dragging { background: var(--accent); }
+    .resizer.dragging::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      cursor: col-resize;
+      z-index: 999;
+    }
+    body.resizing { cursor: col-resize !important; }
+    body.resizing iframe { pointer-events: none; }
+
+    /* ---------- Left pane ---------- */
+    .pane-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 0 14px;
+      height: var(--tabbar-h);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-app);
+      flex-shrink: 0;
+    }
+    .pane-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .pane-title .count {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: var(--bg-elevated);
+    }
+    .pane-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .icon-btn {
+      height: 26px;
+      width: 26px;
+      display: inline-grid;
+      place-items: center;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background .12s ease, color .12s ease, border-color .12s ease;
+      padding: 0;
+    }
+    .icon-btn:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border); }
+    .icon-btn:disabled { color: var(--text-disabled); cursor: not-allowed; }
+    .icon-btn:disabled:hover { background: transparent; border-color: transparent; }
+    .icon-btn svg { width: 14px; height: 14px; stroke-width: 1.6; }
+
+    .text-btn {
+      height: 26px;
+      padding: 0 10px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: background .12s ease, color .12s ease, border-color .12s ease;
+    }
+    .text-btn:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-strong); }
+    .text-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .text-btn:disabled:hover { background: transparent; color: var(--text-secondary); border-color: var(--border); }
+
+    .latest-pill {
+      display: none;
+      height: 26px;
+      padding: 0 10px;
+      background: var(--accent);
+      color: #1a1208;
+      border: 0;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: .01em;
+    }
+    .latest-pill:hover { filter: brightness(1.05); }
+
+    /* ---------- Timeline ---------- */
+    .timeline-shell {
+      flex: 1;
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .timeline {
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 18px 14px 24px;
+      scroll-behavior: smooth;
+      scrollbar-gutter: stable;
+      scrollbar-width: thin;
+      scrollbar-color: #2e3138 transparent;
+    }
+    .timeline::-webkit-scrollbar { width: 10px; }
+    .timeline::-webkit-scrollbar-track { background: transparent; }
+    .timeline::-webkit-scrollbar-thumb {
+      background: #2a2d33;
+      border: 3px solid var(--bg-app);
+      border-radius: 999px;
+    }
+    .timeline::-webkit-scrollbar-thumb:hover { background: #3a3e46; }
+
+    .empty-timeline {
+      height: 100%;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--text-tertiary);
+      padding: 32px;
+    }
+    .empty-timeline .ghost {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 26px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    .empty-timeline .desc {
+      font-size: 12.5px;
+      max-width: 320px;
+      line-height: 1.55;
+    }
+
+    .event {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+      animation: rise .26s cubic-bezier(.2,.7,.2,1) both;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .event-marker {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .event-marker svg { width: 12px; height: 12px; stroke-width: 1.7; }
+    .event[data-type="iteration_started"] .event-marker { background: var(--info-soft);    color: var(--info);    border-color: rgba(125,162,200,.25); }
+    .event[data-type="model_thought"]     .event-marker { background: var(--thought-soft); color: var(--thought); border-color: rgba(184,150,212,.25); }
+    .event[data-type="reasoning_step"]    .event-marker { background: var(--thought-soft); color: var(--thought); border-color: rgba(184,150,212,.45); }
+    .event[data-type="model_response"]    .event-marker { background: var(--thought-soft); color: var(--thought); border-color: rgba(184,150,212,.25); }
+    .event[data-type="model_no_tool"]     .event-marker { background: var(--warn-soft);    color: var(--warn);    border-color: var(--accent-line); }
+    .event[data-type="tool_called"]       .event-marker { background: var(--warn-soft);    color: var(--accent);  border-color: var(--accent-line); }
+    .event[data-type="tool_completed"]    .event-marker { background: var(--success-soft); color: var(--success); border-color: rgba(108,183,138,.25); }
+    .event[data-type="intent_applied"]    .event-marker { background: var(--info-soft);    color: var(--info);    border-color: rgba(125,162,200,.45); }
+    .event[data-type="intent_applied"]    .event-title::after { content: 'OCR'; margin-left: 8px; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; background: var(--info-soft); color: var(--info); border: 1px solid rgba(125,162,200,.45); letter-spacing: .04em; }
+    .event[data-type="tool_failed"]       .event-marker { background: var(--danger-soft);  color: var(--danger);  border-color: rgba(213,123,111,.3); }
+    .event[data-type="screenshot_taken"]  .event-marker { background: var(--info-soft);    color: var(--info);    border-color: rgba(125,162,200,.25); }
+    .event[data-type="task_created"]      .event-marker { background: var(--bg-elevated);  color: var(--accent);  border-color: var(--accent-line); }
+    .event[data-type="task_completed"]    .event-marker { background: var(--success-soft); color: var(--success); border-color: rgba(108,183,138,.25); }
+    .event[data-type="task_failed"]       .event-marker { background: var(--danger-soft);  color: var(--danger);  border-color: rgba(213,123,111,.3); }
+    .event[data-type="model_failed"]      .event-marker { background: var(--danger-soft);  color: var(--danger);  border-color: rgba(213,123,111,.3); }
+
+    .event-body { min-width: 0; }
+    .event-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 3px;
+    }
+    .event-title {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-primary);
+      letter-spacing: -0.005em;
+      text-transform: lowercase;
+    }
+    .event-title .tool-name {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      color: var(--accent);
+    }
+    .event-time {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--text-tertiary);
+      flex-shrink: 0;
+      letter-spacing: 0;
+    }
+    .event-msg {
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: var(--text-secondary);
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+    .event-msg.user-prompt {
+      color: var(--text-primary);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-top: 4px;
+    }
+    .todo-tree {
+      display: grid;
+      gap: 4px;
+      margin-top: 4px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      line-height: 1.45;
+    }
+    .todo-line {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: start;
+      gap: 8px;
+      padding: 3px 6px 3px var(--todo-pad, 6px);
+      border-radius: 4px;
+      color: var(--text-secondary);
+    }
+    .todo-line.done { color: var(--success); }
+    .todo-line.active {
+      color: var(--text-primary);
+      background: rgba(133, 160, 255, .10);
+    }
+    .todo-line.subhead {
+      color: var(--text-tertiary);
+      background: rgba(255, 255, 255, .03);
+    }
+    .todo-marker {
+      min-width: 32px;
+      color: inherit;
+      white-space: nowrap;
+    }
+    .todo-text {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      white-space: normal;
+    }
+
+    .meta-block {
+      margin-top: 8px;
+      display: grid;
+      gap: 4px;
+    }
+    .meta-row {
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      gap: 10px;
+      font-size: 11.5px;
+      line-height: 1.55;
+    }
+    .meta-key {
+      font-family: var(--font-mono);
+      color: var(--text-tertiary);
+      letter-spacing: 0;
+    }
+    .meta-val {
+      font-family: var(--font-mono);
+      color: var(--text-secondary);
+      overflow-wrap: anywhere;
+    }
+    details.meta-fold {
+      margin-top: 6px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-surface);
+      overflow: hidden;
+    }
+    details.meta-fold summary {
+      cursor: pointer;
+      padding: 6px 9px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+      list-style-position: inside;
+      user-select: none;
+    }
+    details.meta-fold summary:hover { color: var(--text-primary); }
+    details.meta-fold pre {
+      margin: 0;
+      padding: 9px 10px;
+      max-height: 260px;
+      overflow: auto;
+      border-top: 1px solid var(--border);
+      background: var(--bg-canvas);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      line-height: 1.55;
+      color: var(--text-primary);
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    details.meta-fold pre::-webkit-scrollbar { width: 8px; height: 8px; }
+    details.meta-fold pre::-webkit-scrollbar-thumb { background: #2a2d33; border-radius: 999px; }
+
+    /* ---------- Composer ---------- */
+    .composer {
+      flex-shrink: 0;
+      border-top: 1px solid var(--border);
+      background: var(--bg-app);
+      padding: 12px;
+    }
+    .composer-shell {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      transition: border-color .15s ease, background .15s ease;
+      overflow: hidden;
+    }
+    .composer-shell:focus-within {
+      border-color: var(--accent-line);
+      background: #1f2329;
+    }
+    .composer textarea {
+      width: 100%;
+      min-height: 44px;
+      max-height: 180px;
+      padding: 12px 14px 4px;
+      border: 0;
+      background: transparent;
+      color: var(--text-primary);
+      font-size: 13.5px;
+      line-height: 1.55;
+      resize: none;
+      outline: none;
+    }
+    .composer textarea::placeholder { color: var(--text-tertiary); }
+    .composer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 8px 8px 12px;
+    }
+    .composer-meta {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--text-tertiary);
+    }
+    .composer-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .send-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 30px;
+      padding: 0 12px;
+      background: var(--text-primary);
+      color: var(--bg-canvas);
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+      transition: opacity .15s ease, transform .1s ease;
+    }
+    .send-btn:hover  { opacity: .92; }
+    .send-btn:active { transform: translateY(1px); }
+    .send-btn:disabled { background: var(--bg-elevated); color: var(--text-disabled); cursor: not-allowed; }
+    .send-btn svg { width: 13px; height: 13px; stroke-width: 2; }
+
+    /* ---------- Right pane ---------- */
+    .tabbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      height: var(--tabbar-h);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-app);
+      flex-shrink: 0;
+    }
+    .tabs {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      min-width: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 28px;
+      padding: 0 11px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background .12s ease, color .12s ease, border-color .12s ease;
+      flex-shrink: 0;
+    }
+    .tab:hover { color: var(--text-primary); background: var(--bg-hover); }
+    .tab.active {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border-color: var(--border);
+    }
+    .tab svg { width: 13px; height: 13px; stroke-width: 1.7; }
+    .tab .count {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--text-tertiary);
+      padding: 0 5px;
+      border-radius: 4px;
+      background: rgba(255,255,255,.04);
+    }
+    .tab.active .count { color: var(--accent); }
+
+    .right-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .control-btn.active {
+      color: #1a1208;
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .control-btn.active:hover {
+      color: #1a1208;
+      background: #e0ad67;
+      border-color: #e0ad67;
+    }
+
+    .stage {
+      flex: 1;
+      min-height: 0;
+      position: relative;
+      background: var(--bg-canvas);
+      overflow: hidden;
+    }
+    .stage-panel {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .stage-panel.active { display: flex; }
+
+    .vnc-frame { flex: 1; min-height: 0; position: relative; background: #000; }
+    .vnc-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #000;
+      display: block;
+    }
+    .vnc-input-shield {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 12px;
+      pointer-events: auto;
+      background: linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,0) 110px);
+    }
+    .vnc-input-shield.visible { display: flex; }
+    .vnc-input-shield span {
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 10px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 999px;
+      background: rgba(12,13,15,.82);
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-family: var(--font-mono);
+      backdrop-filter: blur(8px);
+    }
+    .empty-stage {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 32px;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(214,162,91,.06) 0%, transparent 55%),
+        radial-gradient(circle at 75% 80%, rgba(125,162,200,.05) 0%, transparent 50%),
+        var(--bg-canvas);
+    }
+    .empty-stage .card {
+      max-width: 380px;
+      text-align: center;
+      display: grid;
+      gap: 10px;
+      justify-items: center;
+    }
+    .empty-stage .display-title {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 30px;
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+    .empty-stage .display-msg {
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      max-width: 320px;
+    }
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,.1);
+      border-top-color: var(--accent);
+      border-radius: 999px;
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ---------- Activity log (right tab) ---------- */
+    .activity {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 14px 16px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      line-height: 1.65;
+      color: var(--text-secondary);
+      scrollbar-width: thin;
+      scrollbar-color: #2e3138 transparent;
+    }
+    .activity::-webkit-scrollbar { width: 10px; }
+    .activity::-webkit-scrollbar-thumb {
+      background: #2a2d33;
+      border: 3px solid var(--bg-canvas);
+      border-radius: 999px;
+    }
+    .activity-row { display: grid; grid-template-columns: 78px minmax(82px, 110px) minmax(0, 1fr); gap: 12px; padding: 2px 0; }
+    .activity-row .ts   { color: var(--text-tertiary); }
+    .activity-row .typ  { color: var(--accent); min-width: 0; overflow-wrap: anywhere; }
+    .activity-row .msg  { color: var(--text-primary); min-width: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+    .activity-row .msg .todo-tree { margin-top: 0; }
+    .activity-row .msg .todo-line { padding-top: 2px; padding-bottom: 2px; }
+    .activity-row[data-failed] .typ { color: var(--danger); }
+    .activity-row[data-done]   .typ { color: var(--success); }
+    .activity-row .activity-fold { grid-column: 2 / -1; margin-top: 2px; }
+    .activity-row .activity-fold > summary { cursor: pointer; color: var(--text-tertiary); font-size: 11px; }
+    .activity-row .activity-fold pre {
+      margin: 4px 0 0; padding: 6px 8px; background: rgba(255,255,255,.04);
+      border-radius: 4px; font-size: 11px; white-space: pre-wrap; overflow-wrap: anywhere;
+      max-height: 240px; overflow: auto;
+    }
+
+    /* ---------- Session info (right tab) ---------- */
+    .session-info {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 16px;
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+    .info-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+    .info-card h4 {
+      margin: 0 0 8px;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-tertiary);
+    }
+    .info-card .info-row {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 10px;
+      font-size: 12px;
+      line-height: 1.65;
+      padding: 3px 0;
+    }
+    .info-card .k { color: var(--text-tertiary); font-family: var(--font-mono); font-size: 11px; }
+    .info-card .v { color: var(--text-primary); font-family: var(--font-mono); font-size: 11.5px; overflow-wrap: anywhere; }
+    .file-toolbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .file-input {
+      height: 30px;
+      min-width: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-input);
+      color: var(--text-primary);
+      padding: 0 9px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      outline: none;
+    }
+    .file-input:focus { border-color: var(--accent-line); }
+    .file-list {
+      display: grid;
+      gap: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+    .file-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto auto;
+      gap: 8px;
+      align-items: center;
+      min-height: 30px;
+      padding: 5px 7px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: rgba(255,255,255,.02);
+    }
+    .file-row .name {
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .file-row .meta { color: var(--text-tertiary); white-space: nowrap; }
+    .file-row button,
+    .file-row a.file-download {
+      height: 22px;
+      padding: 0 7px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 10.5px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .file-row button:hover,
+    .file-row a.file-download:hover { background: var(--bg-hover); color: var(--text-primary); }
+    .file-empty { color: var(--text-tertiary); font-family: var(--font-mono); font-size: 11px; }
+
+    /* ---------- Artifacts ---------- */
+    .artifact-shelf {
+      flex-shrink: 0;
+      border-top: 1px solid var(--border);
+      background: var(--bg-app);
+      padding: 10px 12px;
+      display: grid;
+      gap: 8px;
+    }
+    .artifact-shelf[hidden] { display: none; }
+    .artifact-shelf-head,
+    .artifact-browser-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .artifact-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .artifact-title .count {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--text-tertiary);
+      font-weight: 500;
+    }
+    .artifact-chip-list {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #2e3138 transparent;
+    }
+    .artifact-chip {
+      min-width: 190px;
+      max-width: 260px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-surface);
+      padding: 8px;
+    }
+    .artifact-chip-main {
+      min-width: 0;
+      display: grid;
+      gap: 2px;
+      text-align: left;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      cursor: pointer;
+    }
+    .artifact-chip-main:hover .artifact-name { color: var(--text-primary); }
+    .artifact-name {
+      color: var(--text-secondary);
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .artifact-meta {
+      color: var(--text-tertiary);
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      white-space: nowrap;
+    }
+    .artifact-download {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      color: var(--text-secondary);
+      text-decoration: none;
+      background: transparent;
+    }
+    .artifact-download:hover { background: var(--bg-hover); color: var(--text-primary); }
+    .artifact-download svg { width: 13px; height: 13px; stroke-width: 1.8; }
+
+    .artifact-browser {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px;
+      overflow: hidden;
+    }
+    .artifact-browser-list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      display: grid;
+      align-content: start;
+      gap: 8px;
+    }
+    .artifact-item {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 11px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-surface);
+    }
+    .artifact-item-main {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+    .artifact-path {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--text-tertiary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .artifact-action {
+      height: 28px;
+      padding: 0 9px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-secondary);
+      background: transparent;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 11px;
+    }
+    .artifact-action:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+    .artifact-dod-card {
+      grid-column: 1 / -1;
+      margin: 0 0 14px 34px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-surface);
+      animation: rise .26s cubic-bezier(.2,.7,.2,1) both;
+    }
+    .artifact-dod-list {
+      margin-top: 9px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .artifact-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background: rgba(0,0,0,.62);
+      backdrop-filter: blur(6px);
+    }
+    .artifact-modal[hidden] { display: none; }
+    body.modal-open { overflow: hidden; }
+    .artifact-dialog {
+      width: min(980px, calc(100vw - 44px));
+      height: min(760px, calc(100vh - 44px));
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-app);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.48);
+      overflow: hidden;
+    }
+    .artifact-dialog-head {
+      min-height: 58px;
+      padding: 10px 12px 10px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .artifact-dialog-title {
+      min-width: 0;
+      display: grid;
+      gap: 2px;
+    }
+    .artifact-dialog-title strong {
+      color: var(--text-primary);
+      font-size: 13.5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .artifact-dialog-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .artifact-tabs {
+      display: flex;
+      gap: 2px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-canvas);
+    }
+    .artifact-view-tab {
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .artifact-view-tab:hover { color: var(--text-primary); background: var(--bg-hover); }
+    .artifact-view-tab.active {
+      color: var(--text-primary);
+      border-color: var(--border);
+      background: var(--bg-elevated);
+    }
+    .artifact-body {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding: 18px 22px;
+      background: var(--bg-app);
+    }
+    .artifact-raw {
+      margin: 0;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.65;
+      color: var(--text-primary);
+    }
+    .artifact-image-wrap {
+      min-height: 100%;
+      display: grid;
+      place-items: center;
+      background: var(--bg-canvas);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 12px;
+    }
+    .artifact-image-wrap img {
+      max-width: 100%;
+      max-height: calc(100vh - 190px);
+      object-fit: contain;
+      border-radius: 6px;
+    }
+    .markdown-preview {
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.7;
+      max-width: 820px;
+    }
+    .markdown-preview h1,
+    .markdown-preview h2,
+    .markdown-preview h3 {
+      margin: 0 0 12px;
+      line-height: 1.25;
+      color: var(--text-primary);
+    }
+    .markdown-preview h1 { font-size: 26px; }
+    .markdown-preview h2 { font-size: 20px; margin-top: 22px; }
+    .markdown-preview h3 { font-size: 16px; margin-top: 18px; }
+    .markdown-preview p { margin: 0 0 12px; }
+    .markdown-preview ul,
+    .markdown-preview ol { margin: 0 0 14px 22px; padding: 0; }
+    .markdown-preview li { margin: 4px 0; }
+    .markdown-preview a { color: var(--accent); text-decoration: none; }
+    .markdown-preview a:hover { text-decoration: underline; }
+    .markdown-preview code {
+      font-family: var(--font-mono);
+      font-size: .92em;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 4px;
+    }
+    .markdown-preview pre {
+      margin: 0 0 14px;
+      padding: 12px;
+      border-radius: 8px;
+      background: var(--bg-canvas);
+      border: 1px solid var(--border);
+      overflow: auto;
+    }
+    .markdown-preview pre code {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      font-size: 12px;
+    }
+
+    /* ---------- Footer (progress) ---------- */
+    .stage-footer {
+      flex-shrink: 0;
+      height: var(--footer-h);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      border-top: 1px solid var(--border);
+      background: var(--bg-app);
+    }
+    .progress-meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      white-space: nowrap;
+    }
+    .progress-meta .num { color: var(--text-primary); }
+    .progress-track {
+      flex: 1;
+      height: 4px;
+      background: var(--bg-elevated);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 0;
+      background: linear-gradient(90deg, var(--accent) 0%, #e9c694 100%);
+      border-radius: 999px;
+      transition: width .3s cubic-bezier(.2,.7,.2,1);
+    }
+    .progress-fill.failed { background: var(--danger); }
+    .progress-fill.done   { background: var(--success); }
+
+    /* ---------- Definition of Done card ---------- */
+    .dod-card {
+      grid-column: 1 / -1;
+      margin: 4px 0 14px;
+      padding: 14px 16px;
+      background: linear-gradient(180deg, rgba(108,183,138,.10) 0%, rgba(108,183,138,.02) 100%);
+      border: 1px solid rgba(108,183,138,.35);
+      border-radius: 10px;
+      animation: rise .26s cubic-bezier(.2,.7,.2,1) both;
+    }
+    .dod-card.failed {
+      background: linear-gradient(180deg, rgba(213,123,111,.10) 0%, rgba(213,123,111,.02) 100%);
+      border-color: rgba(213,123,111,.35);
+    }
+    .dod-card.cancelled {
+      background: linear-gradient(180deg, rgba(214,162,91,.10) 0%, rgba(214,162,91,.02) 100%);
+      border-color: var(--accent-line);
+    }
+    .dod-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .dod-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 18px;
+      color: var(--success);
+      letter-spacing: -0.005em;
+    }
+    .dod-card.failed .dod-title    { color: var(--danger); }
+    .dod-card.cancelled .dod-title { color: var(--accent); }
+    .dod-title .badge-icon {
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--success-soft);
+      color: var(--success);
+      flex-shrink: 0;
+    }
+    .dod-card.failed .badge-icon    { background: var(--danger-soft);  color: var(--danger); }
+    .dod-card.cancelled .badge-icon { background: var(--warn-soft);    color: var(--accent); }
+    .dod-title .badge-icon svg { width: 13px; height: 13px; stroke-width: 2; }
+    .dod-meta {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--text-tertiary);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .dod-meta .pill-mini {
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+    }
+    .dod-summary {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .cancel-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 30px;
+      padding: 0 11px;
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid rgba(213,123,111,.4);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: background .12s ease, border-color .12s ease;
+    }
+    .cancel-btn:hover { background: var(--danger-soft); border-color: var(--danger); }
+    .cancel-btn svg { width: 12px; height: 12px; stroke-width: 2; }
+
+    /* ---------- Mobile fallback ---------- */
+    @media (max-width: 880px) {
+      .split { grid-template-columns: 1fr; }
+      .resizer, .right { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">Nubian <em>Computer</em></span>
+      </div>
+      <div class="header-pills">
+        <span class="pill" id="pillProvider">
+          <span class="pill-key">provider</span>
+          <span th:text="${selectedProviderId}">firecracker</span>
+        </span>
+        <span class="pill" id="pillModel">
+          <span class="pill-key">model</span>
+          <span>google/gemini-2.5-flash-lite</span>
+        </span>
+        <span class="pill" id="pillStatus">
+          <span class="pill-dot idle" id="statusDot"></span>
+          <span id="statusText">idle</span>
+        </span>
+      </div>
+    </header>
+
+    <div class="split" id="split">
+      <!-- LEFT: Conversation / Timeline -->
+      <section class="left" aria-label="Agent timeline">
+        <div class="pane-head">
+          <div class="pane-title">
+            <span>Conversation</span>
+            <span class="count" id="eventCount">0</span>
+            <span class="count" id="iterationLabel" style="display:none">—</span>
+          </div>
+          <div class="pane-actions">
+            <button class="latest-pill" id="latestBtn" type="button">Jump to latest</button>
+            <button class="icon-btn" id="screenshotBtn" type="button" title="Reload display" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="13" r="4"/><path d="M5 7h2l1.5-2h7L17 7h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/></svg>
+            </button>
+            <button class="icon-btn" id="suspendBtn" type="button" title="Suspend computer" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+            </button>
+            <button class="icon-btn" id="clearBtn" type="button" title="Clear timeline">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="timeline-shell">
+          <div id="timeline" class="timeline" role="log" aria-live="polite"></div>
+        </div>
+
+        <div class="artifact-shelf" id="artifactShelf" hidden>
+          <div class="artifact-shelf-head">
+            <div class="artifact-title">
+              <span>Artifacts</span>
+              <span class="count" id="artifactCount">0</span>
+            </div>
+            <button class="text-btn" id="artifactRefreshBtn" type="button">Refresh</button>
+          </div>
+          <div class="artifact-chip-list" id="artifactList" aria-label="Generated artifacts"></div>
+        </div>
+
+        <div class="composer">
+          <div class="composer-shell">
+            <div class="composer-suite" style="display:flex;gap:8px;align-items:center;padding:0 4px 6px;font-size:12px;">
+              <label for="suitePicker" style="opacity:.7;">Benchmark task:</label>
+              <select id="suitePicker" style="flex:1;padding:4px 6px;background:transparent;border:1px solid rgba(255,255,255,.15);border-radius:6px;color:inherit;font:inherit;">
+                <option value="">— pick a graded task to load —</option>
+              </select>
+            </div>
+            <textarea id="prompt"
+              placeholder="Send a task to Nubian — open a URL, fill a form, summarise a page…"
+              rows="3"></textarea>
+            <div class="composer-bar">
+              <div class="composer-meta">
+                <span id="composerHint">No computer session yet</span>
+              </div>
+              <div class="composer-actions">
+                <button class="text-btn" id="createBtn" type="button" style="display:none">Start computer</button>
+                <button class="text-btn" id="createFlyvmBtn" type="button" title="Boot a fresh Firecracker microVM (FlyVM)">Start FlyVM</button>
+                <button class="text-btn" id="createComputerAgentBtn" type="button" title="Connect to the configured computer-agent backend (OSWorld / Docker / KVM Ubuntu)">Start computer-agent</button>
+                <button class="text-btn" id="createAndroidBtn" type="button" title="Connect to the Android emulator backend (REST/adb agent + noVNC)">Start Android</button>
+                <button class="text-btn" id="newSessionBtn" type="button" title="Discard current session and start a fresh computer">New session</button>
+                <button class="cancel-btn" id="cancelBtn" type="button" style="display:none">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>
+                  Cancel
+                </button>
+                <button class="send-btn" id="runBtn" type="button" disabled>
+                  Run
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14"/><path d="m13 5 7 7-7 7"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RESIZER -->
+      <div class="resizer" id="resizer" role="separator" aria-orientation="vertical" aria-label="Resize panes" tabindex="0"></div>
+
+      <!-- RIGHT: Computer stage -->
+      <section class="right" aria-label="Computer stage">
+        <div class="tabbar">
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-tab="computer" role="tab" aria-selected="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+              Nubian's Computer
+            </button>
+            <button class="tab" data-tab="activity" role="tab" aria-selected="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>
+              Activity
+              <span class="count" id="tabActivityCount">0</span>
+            </button>
+            <button class="tab" data-tab="artifacts" role="tab" aria-selected="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6"/><path d="M9 18h4"/></svg>
+              Artifacts
+              <span class="count" id="tabArtifactCount">0</span>
+            </button>
+            <button class="tab" data-tab="session" role="tab" aria-selected="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1A2 2 0 1 1 4.4 17l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3 1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8 1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+              Session
+            </button>
+          </div>
+          <div class="right-actions">
+            <button class="text-btn control-btn" id="vncControlBtn" type="button" disabled>Take control</button>
+            <button class="icon-btn" id="openTabBtn" type="button" title="Open noVNC in new tab" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 3h7v7"/><path d="M10 14 21 3"/><path d="M21 14v7H3V3h7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="stage">
+          <!-- Computer tab -->
+          <div class="stage-panel active" data-tab="computer" role="tabpanel">
+            <div class="vnc-frame">
+              <iframe id="vncFrame" title="Nubian computer noVNC"></iframe>
+              <div class="vnc-input-shield visible" id="vncInputShield"><span>Watch only · take control to interact</span></div>
+              <div class="empty-stage" id="emptyStage">
+                <div class="card">
+                  <div class="display-title" id="displayTitle">Boot a computer</div>
+                  <div class="display-msg" id="displayMessage">Spin up a Firecracker microVM with a live noVNC display — Nubian's agent will drive it for you.</div>
+                  <div id="displaySpinner" class="spinner" hidden></div>
+                  <button class="text-btn" id="displayRetry" type="button" style="display:none;margin-top:6px;">Retry display</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity tab -->
+          <div class="stage-panel" data-tab="activity" role="tabpanel">
+            <div class="activity" id="activityLog" aria-live="polite"></div>
+          </div>
+
+          <!-- Artifacts tab -->
+          <div class="stage-panel" data-tab="artifacts" role="tabpanel">
+            <div class="artifact-browser">
+              <div class="artifact-browser-head">
+                <div class="artifact-title">
+                  <span>Artifact Surface</span>
+                  <span class="count" id="artifactBrowserCount">No artifacts</span>
+                </div>
+                <button class="text-btn" id="artifactBrowserRefreshBtn" type="button" disabled>Refresh</button>
+              </div>
+              <div class="artifact-browser-list" id="artifactBrowserList">
+                <div class="file-empty">Generated files will appear here after a run.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Session tab -->
+          <div class="stage-panel" data-tab="session" role="tabpanel">
+            <div class="session-info">
+              <div class="info-card">
+                <h4>Session</h4>
+                <div class="info-row"><span class="k">provider</span><span class="v" id="infoProvider">—</span></div>
+                <div class="info-row"><span class="k">session id</span><span class="v" id="infoSession">—</span></div>
+                <div class="info-row"><span class="k">vm id</span><span class="v" id="infoVm">—</span></div>
+                <div class="info-row"><span class="k">status</span><span class="v" id="infoStatus">—</span></div>
+              </div>
+              <div class="info-card">
+                <h4>Previous sessions</h4>
+                <div class="file-toolbar">
+                  <span class="file-empty">Open by URL or select one below.</span>
+                  <button class="text-btn" id="sessionRefreshBtn" type="button">Refresh</button>
+                </div>
+                <div class="file-list" id="sessionList"><div class="file-empty">No sessions loaded.</div></div>
+              </div>
+              <div class="info-card">
+                <h4>Run</h4>
+                <div class="info-row"><span class="k">run id</span><span class="v" id="infoRun">—</span></div>
+                <div class="info-row"><span class="k">model</span><span class="v" id="infoModel">google/gemini-2.5-flash-lite</span></div>
+                <div class="info-row"><span class="k">iteration</span><span class="v" id="infoIter">—</span></div>
+                <div class="info-row"><span class="k">events</span><span class="v" id="infoEvents">0</span></div>
+              </div>
+              <div class="info-card">
+                <h4>Display</h4>
+                <div class="info-row"><span class="k">noVNC</span><span class="v" id="infoNoVnc">—</span></div>
+                <div class="info-row"><span class="k">control</span><span class="v" id="infoControl">watch-only</span></div>
+              </div>
+              <div class="info-card">
+                <h4>Files</h4>
+                <div class="file-toolbar">
+                  <input class="file-input" id="filePath" value="/workspace" spellcheck="false" aria-label="File path">
+                  <button class="text-btn" id="fileRefreshBtn" type="button" disabled>Refresh</button>
+                </div>
+                <div class="file-list" id="fileList"><div class="file-empty">No session.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stage-footer">
+          <span class="progress-meta"><span class="num" id="progressNum">0</span> / <span id="progressMax">20</span> iterations</span>
+          <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+          <span class="progress-meta" id="progressLabel">idle</span>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="artifact-modal" id="artifactModal" hidden role="dialog" aria-modal="true" aria-labelledby="artifactDialogName">
+    <div class="artifact-dialog">
+      <div class="artifact-dialog-head">
+        <div class="artifact-dialog-title">
+          <strong id="artifactDialogName">Artifact</strong>
+          <span class="artifact-path" id="artifactDialogPath">—</span>
+        </div>
+        <div class="artifact-dialog-actions">
+          <a class="artifact-action" id="artifactDialogDownload" href="#" download>Download</a>
+          <button class="artifact-action" id="artifactDialogClose" type="button">Close</button>
+        </div>
+      </div>
+      <div class="artifact-tabs" id="artifactDialogTabs"></div>
+      <div class="artifact-body" id="artifactDialogBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const MAX_SCROLLBACK_EVENTS = 500;
+    const MAX_ITERATIONS = 20;
+    const SPLIT_KEY = 'nubian.demo.computer.splitWidth';
+    const SESSION_KEY = 'nubian.demo.computer.session';
+    const FILE_ROOTS = new Set(['/workspace', '/downloads', '/uploads', '/logs', '/tmp/agent']);
+    const ARTIFACT_SURFACE_ROOTS = ['/workspace/agent-demo'];
+
+    const state = {
+      providerId: '',
+      forcedProviderId: '',  // set by Start FlyVM / Start computer-agent / Start Android buttons
+      sessionId: '',
+      vmId: '',
+      noVncUrl: '',
+      runId: '',
+      runStatus: 'idle',
+      iteration: 0,
+      displayReady: false,
+      displayAttempt: 0,
+      vncControl: false,
+      filePath: '/workspace',
+      artifacts: [],
+      requestedArtifactPaths: new Set(),
+      runArtifactPaths: new Set(),
+      autoScroll: true,
+      eventBacklog: [],
+      events: null,        // active EventSource so cancelTask() can close it
+      cancelled: false,
+      runStartedAt: 0
+    };
+
+    const $ = id => document.getElementById(id);
+    const els = {
+      split: $('split'),
+      resizer: $('resizer'),
+      timeline: $('timeline'),
+      activityLog: $('activityLog'),
+      eventCount: $('eventCount'),
+      tabActivityCount: $('tabActivityCount'),
+      tabArtifactCount: $('tabArtifactCount'),
+      iterationLabel: $('iterationLabel'),
+      latestBtn: $('latestBtn'),
+      clearBtn: $('clearBtn'),
+      screenshotBtn: $('screenshotBtn'),
+      suspendBtn: $('suspendBtn'),
+      composerHint: $('composerHint'),
+      prompt: $('prompt'),
+      suitePicker: $('suitePicker'),
+      runBtn: $('runBtn'),
+      cancelBtn: $('cancelBtn'),
+      createBtn: $('createBtn'),
+      createFlyvmBtn: $('createFlyvmBtn'),
+      createComputerAgentBtn: $('createComputerAgentBtn'),
+      createAndroidBtn: $('createAndroidBtn'),
+      newSessionBtn: $('newSessionBtn'),
+      statusDot: $('statusDot'),
+      statusText: $('statusText'),
+      vncFrame: $('vncFrame'),
+      vncControlBtn: $('vncControlBtn'),
+      vncInputShield: $('vncInputShield'),
+      emptyStage: $('emptyStage'),
+      displayTitle: $('displayTitle'),
+      displayMessage: $('displayMessage'),
+      displaySpinner: $('displaySpinner'),
+      displayRetry: $('displayRetry'),
+      openTabBtn: $('openTabBtn'),
+      progressNum: $('progressNum'),
+      progressMax: $('progressMax'),
+      progressFill: $('progressFill'),
+      progressLabel: $('progressLabel'),
+      infoProvider: $('infoProvider'),
+      infoSession: $('infoSession'),
+      infoVm: $('infoVm'),
+      infoStatus: $('infoStatus'),
+      infoRun: $('infoRun'),
+      infoIter: $('infoIter'),
+      infoEvents: $('infoEvents'),
+      infoNoVnc: $('infoNoVnc'),
+      infoControl: $('infoControl'),
+      sessionRefreshBtn: $('sessionRefreshBtn'),
+      sessionList: $('sessionList'),
+      filePath: $('filePath'),
+      fileRefreshBtn: $('fileRefreshBtn'),
+      fileList: $('fileList'),
+      artifactShelf: $('artifactShelf'),
+      artifactCount: $('artifactCount'),
+      artifactList: $('artifactList'),
+      artifactRefreshBtn: $('artifactRefreshBtn'),
+      artifactBrowserCount: $('artifactBrowserCount'),
+      artifactBrowserList: $('artifactBrowserList'),
+      artifactBrowserRefreshBtn: $('artifactBrowserRefreshBtn'),
+      artifactModal: $('artifactModal'),
+      artifactDialogName: $('artifactDialogName'),
+      artifactDialogPath: $('artifactDialogPath'),
+      artifactDialogDownload: $('artifactDialogDownload'),
+      artifactDialogClose: $('artifactDialogClose'),
+      artifactDialogTabs: $('artifactDialogTabs'),
+      artifactDialogBody: $('artifactDialogBody')
+    };
+
+    els.progressMax.textContent = MAX_ITERATIONS;
+    els.vncFrame.style.visibility = 'hidden';
+
+    /* ---------------- Resizer ---------------- */
+    function applySplitWidth(px) {
+      const min = 360;
+      const max = Math.max(min + 200, window.innerWidth - 480);
+      const clamped = Math.min(max, Math.max(min, px));
+      document.documentElement.style.setProperty('--left-w', clamped + 'px');
+      try { localStorage.setItem(SPLIT_KEY, String(clamped)); } catch (_) {}
+    }
+    (function restoreSplit() {
+      let saved = 480;
+      try {
+        const v = parseInt(localStorage.getItem(SPLIT_KEY) || '', 10);
+        if (Number.isFinite(v) && v > 200) saved = v;
+      } catch (_) {}
+      applySplitWidth(saved);
+    })();
+    (function attachResizer() {
+      const resizer = els.resizer;
+      let dragging = false;
+      const onMove = ev => { if (dragging) applySplitWidth(ev.clientX); };
+      const onUp = () => {
+        dragging = false;
+        resizer.classList.remove('dragging');
+        document.body.classList.remove('resizing');
+        window.removeEventListener('mousemove', onMove);
+        window.removeEventListener('mouseup', onUp);
+      };
+      resizer.addEventListener('mousedown', ev => {
+        ev.preventDefault();
+        dragging = true;
+        resizer.classList.add('dragging');
+        document.body.classList.add('resizing');
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onUp);
+      });
+      resizer.addEventListener('keydown', ev => {
+        const cur = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--left-w'), 10) || 480;
+        const step = ev.shiftKey ? 40 : 12;
+        if (ev.key === 'ArrowLeft')  { applySplitWidth(cur - step); ev.preventDefault(); }
+        if (ev.key === 'ArrowRight') { applySplitWidth(cur + step); ev.preventDefault(); }
+      });
+      window.addEventListener('resize', () => {
+        const cur = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--left-w'), 10) || 480;
+        applySplitWidth(cur);
+      });
+    })();
+
+    /* ---------------- Tabs ---------------- */
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.tab;
+        document.querySelectorAll('.tab').forEach(t => {
+          const on = t === tab;
+          t.classList.toggle('active', on);
+          t.setAttribute('aria-selected', String(on));
+        });
+        document.querySelectorAll('.stage-panel').forEach(p => {
+          p.classList.toggle('active', p.dataset.tab === target);
+        });
+      });
+    });
+
+    /* ---------------- Status ---------------- */
+    function setRunStatus(status) {
+      const s = status || 'idle';
+      state.runStatus = s;
+      els.statusText.textContent = s;
+      els.statusDot.className = 'pill-dot ' + (s === 'running' ? 'running' : s === 'done' ? 'done' : s === 'failed' ? 'failed' : s === 'cancelled' ? 'cancelled' : 'idle');
+      els.progressLabel.textContent = s;
+      els.progressFill.classList.toggle('failed', s === 'failed');
+      els.progressFill.classList.toggle('done',   s === 'done');
+    }
+
+    function setIteration(n) {
+      state.iteration = n;
+      els.progressNum.textContent = String(n);
+      els.infoIter.textContent = String(n);
+      els.iterationLabel.style.display = n > 0 ? 'inline-flex' : 'none';
+      els.iterationLabel.textContent = `iter ${n}/${MAX_ITERATIONS}`;
+      const pct = Math.min(100, (n / MAX_ITERATIONS) * 100);
+      els.progressFill.style.width = pct + '%';
+    }
+
+    function resetProgress() {
+      setIteration(0);
+      els.progressFill.style.width = '0%';
+      els.progressFill.classList.remove('failed', 'done');
+    }
+
+    /* ---------------- Timeline rendering ---------------- */
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
+    }
+    function eventTime(value) {
+      const date = value ? new Date(value) : new Date();
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    }
+    function tryPrettyJson(value) {
+      const trimmed = String(value ?? '').trim();
+      if (!trimmed || !/^[\[{]/.test(trimmed)) return null;
+      try { return JSON.stringify(JSON.parse(trimmed), null, 2); } catch (_) { return null; }
+    }
+    function isNearBottom() {
+      const t = els.timeline;
+      return (t.scrollHeight - t.clientHeight - t.scrollTop) < 60;
+    }
+    function setAutoScroll(on) {
+      state.autoScroll = on;
+      els.latestBtn.style.display = on ? 'none' : 'inline-flex';
+    }
+    function scrollToLatest() {
+      setAutoScroll(true);
+      els.timeline.scrollTop = els.timeline.scrollHeight;
+    }
+    function ensureEmptyClear() {
+      const empty = els.timeline.querySelector('.empty-timeline');
+      if (empty) empty.remove();
+    }
+    function showEmpty() {
+      if (els.timeline.querySelector('.empty-timeline')) return;
+      els.timeline.innerHTML = `<div class="empty-timeline">
+        <div>
+          <div class="ghost">Ready when you are.</div>
+          <div class="desc">Boot a computer, then send Nubian a task. Iterations, tool calls and screenshots stream in here.</div>
+        </div>
+      </div>`;
+    }
+
+    function iconSvg(name) {
+      const paths = {
+        refresh: '<path d="M3 12a9 9 0 0 1 15.5-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.4L3 16"/><path d="M3 21v-5h5"/>',
+        brain:   '<path d="M12 5a3 3 0 0 0-3 3v0a3 3 0 0 0-3 3v0a3 3 0 0 0 3 3v3a3 3 0 0 0 3 3v0a3 3 0 0 0 3-3v0a3 3 0 0 0 3-3v0a3 3 0 0 0-3-3v-3a3 3 0 0 0-3-3z"/>',
+        arrow:   '<path d="M5 12h14"/><path d="m13 5 7 7-7 7"/>',
+        check:   '<path d="m5 12 5 5 9-11"/>',
+        x:       '<path d="M18 6 6 18M6 6l12 12"/>',
+        camera:  '<circle cx="12" cy="13" r="4"/><path d="M5 7h2l1.5-2h7L17 7h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/>',
+        download:'<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>',
+        spark:   '<path d="M12 3v6M12 15v6M3 12h6M15 12h6"/>',
+        alert:   '<path d="M12 8v5"/><circle cx="12" cy="17" r="0.5" fill="currentColor"/><path d="m10.3 3.86-7.4 12.8A2 2 0 0 0 4.6 20h14.8a2 2 0 0 0 1.7-3.34l-7.4-12.8a2 2 0 0 0-3.4 0z"/>',
+        chat:    '<path d="M21 12a8 8 0 0 1-12.4 6.7L3 20l1.3-5.6A8 8 0 1 1 21 12z"/>',
+        dot:     '<circle cx="12" cy="12" r="3" fill="currentColor"/>'
+      };
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">${paths[name] || paths.dot}</svg>`;
+    }
+    function markerFor(type) {
+      switch (type) {
+        case 'iteration_started': return iconSvg('refresh');
+        case 'model_thought':
+        case 'reasoning_step':
+        case 'model_response':    return iconSvg('brain');
+        case 'tool_called':       return iconSvg('arrow');
+        case 'tool_completed':    return iconSvg('check');
+        case 'intent_applied':    return iconSvg('check');
+        case 'tool_failed':       return iconSvg('x');
+        case 'screenshot_taken':  return iconSvg('camera');
+        case 'task_completed':    return iconSvg('check');
+        case 'task_created':      return iconSvg('spark');
+        case 'task_checklist_created':
+        case 'task_checklist_updated':
+        case 'checkpoint_check_queued':
+        case 'checkpoint_check_started':
+        case 'checkpoint_progress_observed':
+                                 return iconSvg('check');
+        case 'checkpoint_rejected':
+                                 return iconSvg('alert');
+        case 'checkpoint_cache_hit':
+                                 return iconSvg('check');
+        case 'llm_call':         return iconSvg('brain');
+        case 'stack_health':     return iconSvg('check');
+        case 'route_invalidated': return iconSvg('alert');
+        case 'blame_state':       return iconSvg('alert');
+        case 'task_failed':       return iconSvg('x');
+        case 'model_failed':      return iconSvg('x');
+        case 'model_no_tool':     return iconSvg('alert');
+        case 'message_generated': return iconSvg('chat');
+        default:                  return iconSvg('dot');
+      }
+    }
+
+    function extractArtifactPaths(text) {
+      const paths = new Set();
+      const source = String(text || '');
+      const pattern = /\/(?:workspace|downloads|uploads|logs|tmp\/agent)(?:\/[^\s"'<>),\]}]+)+/g;
+      let match;
+      while ((match = pattern.exec(source)) !== null) {
+        const path = match[0].replace(/[.,;:!?]+$/g, '');
+        if (path && !path.endsWith('/')) paths.add(path);
+      }
+      return paths;
+    }
+
+    function rememberRunArtifactPath(path) {
+      const clean = String(path || '').trim();
+      if (!clean || clean.endsWith('/')) return;
+      if (!Array.from(FILE_ROOTS).some(root => clean === root || clean.startsWith(`${root}/`))) return;
+      state.runArtifactPaths.add(clean);
+    }
+
+    function metadataHtml(metadata = {}, type = '') {
+      const entries = Object.entries(metadata || {})
+        .filter(([k, v]) => k !== 'timestamp' && v !== null && v !== undefined && String(v) !== '');
+      if (!entries.length) return '';
+      const rows = entries.map(([key, raw]) => {
+        const pretty = tryPrettyJson(raw);
+        const value = pretty || String(raw);
+        const lower = key.toLowerCase();
+        const isLong = value.length > 110 || value.includes('\n') ||
+          ['preview','json','command','arguments','args'].some(s => lower.includes(s));
+        if (isLong) {
+          return `<details class="meta-fold" open><summary>${escapeHtml(key)}</summary><pre>${escapeHtml(value)}</pre></details>`;
+        }
+        if (/^https?:\/\//i.test(value)) {
+          return `<div class="meta-row"><span class="meta-key">${escapeHtml(key)}</span><span class="meta-val"><a href="${escapeHtml(value)}" target="_blank" rel="noopener noreferrer">${escapeHtml(value)}</a></span></div>`;
+        }
+        return `<div class="meta-row"><span class="meta-key">${escapeHtml(key)}</span><span class="meta-val">${escapeHtml(value)}</span></div>`;
+      }).join('');
+      return `<div class="meta-block">${rows}</div>`;
+    }
+
+    function checklistHtml(message) {
+      const lines = String(message || '').split('\n').filter(line => line.trim() !== '');
+      if (!lines.length) return `<div class="event-msg">${escapeHtml(message)}</div>`;
+      const rows = lines.map(line => {
+        const raw = String(line || '');
+        const trimmed = raw.trimStart();
+        const depth = Math.max(0, raw.length - trimmed.length) / 2;
+        let state = 'pending';
+        let marker = '';
+        let text = trimmed;
+        if (text.startsWith('[x]')) {
+          state = 'done';
+          marker = '[x]';
+          text = text.slice(3).trim();
+        } else if (text.startsWith('[>]')) {
+          state = 'active';
+          marker = '[>]';
+          text = text.slice(3).trim();
+        } else if (text.startsWith('[ ]')) {
+          marker = '[ ]';
+          text = text.slice(3).trim();
+        } else if (text.startsWith('[sub]')) {
+          state = 'subhead';
+          marker = '[sub]';
+          text = text.slice(5).trim();
+        }
+        const pad = 6 + Math.floor(depth) * 18;
+        return `<div class="todo-line ${state}" style="--todo-pad:${pad}px"><span class="todo-marker">${escapeHtml(marker)}</span><span class="todo-text">${escapeHtml(text)}</span></div>`;
+      }).join('');
+      return `<div class="todo-tree">${rows}</div>`;
+    }
+
+    function activityMessageHtml(type, message) {
+      if (type === 'task_checklist_created' || type === 'task_checklist_updated') {
+        return `<div class="msg">${checklistHtml(message)}</div>`;
+      }
+      return `<span class="msg">${escapeHtml(message)}</span>`;
+    }
+
+    function renderEvent(type, message, metadata = {}) {
+      ensureEmptyClear();
+      const el = document.createElement('div');
+      el.className = 'event';
+      el.dataset.type = type;
+
+      let titleHtml = type.replaceAll('_', ' ');
+      let bodyHtml;
+
+      if (type === 'message_generated') {
+        bodyHtml = `<div class="event-msg user-prompt">${escapeHtml(message)}</div>`;
+        titleHtml = 'you';
+      } else if (type === 'model_thought') {
+        const content = String(message ?? '');
+        if (content.length > 600) {
+          bodyHtml = `<details class="meta-fold" style="margin-top:4px;"><summary>${escapeHtml(content.slice(0, 90))}…</summary><pre>${escapeHtml(content)}</pre></details>`;
+        } else if (content.trim()) {
+          bodyHtml = `<div class="event-msg" style="font-family:var(--font-mono);font-size:11.5px;">${escapeHtml(content)}</div>`;
+        } else {
+          bodyHtml = `<div class="event-msg" style="color:var(--text-tertiary)">(empty thought)</div>`;
+        }
+      } else if (type === 'tool_called') {
+        const toolName = metadata.tool || metadata.name || message || '';
+        titleHtml = toolName
+          ? `tool <span class="tool-name">${escapeHtml(toolName)}</span>`
+          : 'tool called';
+        bodyHtml = `<div class="event-msg">${escapeHtml(message)}</div>`;
+        // XML-tools mode: surface the per-call <reason> right under the
+        // tool name so the model's stated WHY is the first thing the user
+        // sees, before the JSON args.
+        const reason = metadata.reason;
+        if (reason && String(reason).trim() !== '') {
+          bodyHtml += `<div class="event-msg" style="margin-top:4px;color:var(--thought,#b896d4);font-style:italic;font-size:11.5px;border-left:2px solid var(--thought,#b896d4);padding-left:8px">${escapeHtml(String(reason))}</div>`;
+        }
+        const args = metadata.arguments || metadata.args;
+        if (args !== null && args !== undefined && String(args) !== '') {
+          let argsStr = typeof args === 'string' ? args : JSON.stringify(args, null, 2);
+          try { argsStr = JSON.stringify(JSON.parse(argsStr), null, 2); } catch (_) {}
+          bodyHtml += `<details class="meta-fold" open><summary>arguments</summary><pre>${escapeHtml(argsStr)}</pre></details>`;
+        }
+      } else if (type === 'reasoning_step') {
+        // No-tools planning preamble — render its text prominently.
+        titleHtml = `<span class="tool-name">reasoning</span> · step ${escapeHtml(metadata.innerStep || '')}`;
+        const txt = metadata.text || '';
+        bodyHtml = txt && String(txt).trim() !== ''
+            ? `<div class="event-msg" style="white-space:pre-wrap;font-family:var(--font-mono);font-size:11.5px;background:rgba(184,150,212,.06);padding:8px 10px;border-radius:4px;border-left:3px solid var(--thought,#b896d4)">${escapeHtml(String(txt))}</div>`
+            : `<div class="event-msg" style="color:var(--text-tertiary)">(no reasoning produced)</div>`;
+      } else if (type === 'model_response') {
+        // Surface the model's assistant text so the agent's reasoning is visible
+        // alongside the tool call it produced.
+        bodyHtml = `<div class="event-msg">${escapeHtml(message)}</div>`;
+        const txt = metadata.assistantText;
+        if (txt && String(txt).trim() !== '') {
+          const stepTotal = Number(metadata.totalTokens || 0)
+              || (Number(metadata.promptTokens || 0) + Number(metadata.completionTokens || 0));
+          const cum = Number(metadata.cumulativeTotalTokens || 0);
+          const stepLabel = stepTotal ? ` · ${stepTotal} tok` : '';
+          const cumLabel = cum ? ` · cum ${cum.toLocaleString()}` : '';
+          bodyHtml += `<details class="meta-fold" open><summary>assistant text${escapeHtml(stepLabel)}${escapeHtml(cumLabel)}</summary><pre style="white-space:pre-wrap">${escapeHtml(String(txt))}</pre></details>`;
+        }
+      } else if (type === 'screenshot_taken') {
+        const bytes = metadata.bytes ? ` · ${Number(metadata.bytes).toLocaleString()} bytes` : '';
+        bodyHtml = `<div class="event-msg">${escapeHtml(message)}${escapeHtml(bytes)}</div>`;
+      } else if (type === 'llm_call') {
+        const role = metadata.role || '';
+        const model = metadata.model || '';
+        titleHtml = `<span class="tool-name">llm</span> · ${escapeHtml(role)} · ${escapeHtml(model)}`;
+        const err = metadata.errorMessage;
+        if (err && String(err).trim() !== '') {
+          bodyHtml = `<div class="event-msg" style="color:#e57373">HTTP ${escapeHtml(String(metadata.httpStatus || 0))} · ${escapeHtml(String(err))}</div>`;
+        } else {
+          const fmt = (n) => Number(n || 0).toLocaleString();
+          const reqKb = (Number(metadata.requestBytes || 0) / 1024).toFixed(1);
+          const respKb = (Number(metadata.responseBytes || 0) / 1024).toFixed(1);
+          bodyHtml = `<div class="event-msg" style="font-family:var(--font-mono);font-size:11.5px">`
+            + `prompt=<b>${fmt(metadata.promptTokens)}</b>`
+            + ` · cached=<b>${fmt(metadata.cachedTokens)}</b>`
+            + ` · reasoning=<b>${fmt(metadata.reasoningTokens)}</b>`
+            + ` · completion=<b>${fmt(metadata.completionTokens)}</b>`
+            + ` · total=<b>${fmt(metadata.totalTokens)}</b>`
+            + ` · ${reqKb}KB→${respKb}KB`
+            + ` · ${fmt(metadata.elapsedMs)}ms`
+            + `</div>`
+            + `<div class="event-msg" style="margin-top:3px;font-family:var(--font-mono);font-size:10.5px;color:var(--text-tertiary)">`
+            + `cumulative · prompt=${fmt(metadata.cumulativePromptTokens)}`
+            + ` · cached=${fmt(metadata.cumulativeCachedTokens)}`
+            + ` · reasoning=${fmt(metadata.cumulativeReasoningTokens)}`
+            + ` · completion=${fmt(metadata.cumulativeCompletionTokens)}`
+            + ` · total=${fmt(metadata.cumulativeTotalTokens)}`
+            + `</div>`;
+        }
+      } else if (type === 'checkpoint_cache_hit') {
+        const okStr = metadata.ok === true || metadata.ok === 'true' ? 'ok=true' : 'ok=false';
+        bodyHtml = `<div class="event-msg" style="color:var(--text-tertiary)">cache hit · ${escapeHtml(okStr)} · ${escapeHtml(String(metadata.reason || ''))}</div>`;
+      } else if (type === 'task_checklist_created' || type === 'task_checklist_updated') {
+        bodyHtml = checklistHtml(message);
+      } else {
+        bodyHtml = `<div class="event-msg">${escapeHtml(message)}</div>`;
+      }
+
+      const meta = metadataHtml(metadata, type);
+
+      el.innerHTML = `
+        <div class="event-marker">${markerFor(type)}</div>
+        <div class="event-body">
+          <div class="event-head">
+            <span class="event-title">${titleHtml}</span>
+            <span class="event-time">${eventTime(metadata.timestamp)}</span>
+          </div>
+          ${bodyHtml}
+          ${meta}
+        </div>`;
+      els.timeline.appendChild(el);
+
+      // mirror to activity log
+      const row = document.createElement('div');
+      row.className = 'activity-row';
+      if (['tool_failed','task_failed','model_failed'].includes(type)) row.dataset.failed = '1';
+      if (['tool_completed','task_completed'].includes(type)) row.dataset.done = '1';
+      let extra = '';
+      if (type === 'tool_called') {
+        const reason = metadata.reason;
+        if (reason && String(reason).trim() !== '') {
+          extra += `<details class="activity-fold" open><summary>reason</summary><pre>${escapeHtml(String(reason))}</pre></details>`;
+        }
+        const args = metadata.arguments || metadata.args;
+        if (args !== null && args !== undefined && String(args) !== '') {
+          let argsStr = typeof args === 'string' ? args : JSON.stringify(args);
+          try { argsStr = JSON.stringify(JSON.parse(argsStr)); } catch (_) {}
+          if (argsStr.length > 240) argsStr = argsStr.slice(0, 240) + '…';
+          extra += `<details class="activity-fold" open><summary>args</summary><pre>${escapeHtml(argsStr)}</pre></details>`;
+        }
+      } else if (type === 'model_response') {
+        const txt = metadata.assistantText;
+        if (txt && String(txt).trim() !== '') {
+          let s = String(txt);
+          if (s.length > 800) s = s.slice(0, 800) + '…';
+          extra = `<details class="activity-fold" open><summary>reasoning</summary><pre>${escapeHtml(s)}</pre></details>`;
+        }
+      } else if (type === 'reasoning_step') {
+        // Surface the no-tools reasoning text in the right panel too.
+        const txt = metadata.text || '';
+        if (String(txt).trim() !== '') {
+          let s = String(txt);
+          if (s.length > 1200) s = s.slice(0, 1200) + '…';
+          extra = `<details class="activity-fold" open><summary>plan</summary><pre>${escapeHtml(s)}</pre></details>`;
+        }
+      }
+      row.innerHTML = `<span class="ts">${eventTime(metadata.timestamp)}</span><span class="typ">${escapeHtml(type)}</span>${activityMessageHtml(type, message)}${extra}`;
+      els.activityLog.appendChild(row);
+
+      if (type === 'iteration_started') {
+        const n = metadata.iteration !== undefined ? Number(metadata.iteration) : state.iteration + 1;
+        setIteration(n);
+      }
+
+      if (type === 'task_completed' || type === 'task_failed' || type === 'task_cancelled') {
+        renderDoDCard(type, message, metadata);
+      }
+    }
+
+    function renderDoDCard(type, message, metadata = {}) {
+      const card = document.createElement('div');
+      const variant = type === 'task_completed' ? '' : (type === 'task_cancelled' ? 'cancelled' : 'failed');
+      card.className = 'dod-card ' + variant;
+      const icon = type === 'task_completed'
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11"/></svg>'
+        : type === 'task_cancelled'
+          ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>'
+          : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+      const label = type === 'task_completed' ? 'Definition of done — agent decided' :
+                    type === 'task_cancelled' ? 'Cancelled by you' :
+                    'Could not complete';
+      const finishReason = metadata.finishReason || (type === 'task_completed' ? 'done' : 'failed');
+      const iter = metadata.iteration ? `iter ${metadata.iteration}` : '';
+      const elapsed = state.runStartedAt ? Math.max(0, Math.round((Date.now() - state.runStartedAt) / 1000)) + 's' : '';
+      const pills = [finishReason, iter, elapsed].filter(Boolean)
+        .map(p => `<span class="pill-mini">${escapeHtml(p)}</span>`).join('');
+      card.innerHTML = `
+        <div class="dod-head">
+          <div class="dod-title"><span class="badge-icon">${icon}</span><span>${label}</span></div>
+          <div class="dod-meta">${pills}</div>
+        </div>
+        <div class="dod-summary">${escapeHtml(message || '(no summary)')}</div>`;
+      els.timeline.appendChild(card);
+    }
+
+    function addEvent(type, message, metadata = {}) {
+      const stick = state.autoScroll || isNearBottom();
+      const event = {
+        type,
+        message: String(message ?? ''),
+        metadata: { ...(metadata || {}), timestamp: metadata.timestamp || new Date().toISOString() }
+      };
+      state.eventBacklog.push(event);
+      if (state.eventBacklog.length > MAX_SCROLLBACK_EVENTS) {
+        state.eventBacklog.splice(0, state.eventBacklog.length - MAX_SCROLLBACK_EVENTS);
+        while (els.timeline.children.length > state.eventBacklog.length + 1) {
+          els.timeline.removeChild(els.timeline.firstElementChild);
+        }
+        while (els.activityLog.children.length > state.eventBacklog.length) {
+          els.activityLog.removeChild(els.activityLog.firstElementChild);
+        }
+      }
+      renderEvent(event.type, event.message, event.metadata);
+      ArtifactSurface.maybeRefreshFromEvent(event.type, event.message, event.metadata);
+      els.eventCount.textContent = String(state.eventBacklog.length);
+      els.tabActivityCount.textContent = String(state.eventBacklog.length);
+      els.infoEvents.textContent = String(state.eventBacklog.length);
+      if (stick) {
+        scrollToLatest();
+        els.activityLog.scrollTop = els.activityLog.scrollHeight;
+      } else {
+        setAutoScroll(false);
+      }
+    }
+
+    function resetEvents() {
+      state.eventBacklog = [];
+      els.timeline.replaceChildren();
+      els.activityLog.replaceChildren();
+      els.eventCount.textContent = '0';
+      els.tabActivityCount.textContent = '0';
+      els.infoEvents.textContent = '0';
+      resetProgress();
+      setAutoScroll(true);
+      showEmpty();
+      ArtifactSurface.clear();
+    }
+
+    /* ---------------- API helpers ---------------- */
+    function isExpiredComputerErrorText(value) {
+      const text = String(value || '').toLowerCase();
+      return text.includes('collection_not_found')
+        || text.includes('computer vm not found')
+        || text.includes('computer session expired')
+        || text.includes('sandbox session not found');
+    }
+
+    function cleanApiError(raw, fallback = 'Request failed') {
+      const text = String(raw || '').trim();
+      let message = text || fallback;
+      try {
+        const parsed = JSON.parse(text);
+        message = parsed.error || parsed.message || parsed.reason || message;
+      } catch (_) {}
+      if (isExpiredComputerErrorText(message) || isExpiredComputerErrorText(text)) {
+        return 'Computer session expired or VM no longer exists. Start a new computer.';
+      }
+      return message.length > 900 ? `${message.slice(0, 900)}...` : message;
+    }
+
+    function expireCurrentSession(message = 'Computer session expired or VM no longer exists. Start a new computer.') {
+      const alreadyExpired = !state.sessionId && els.infoStatus.textContent === 'expired';
+      localStorage.removeItem(SESSION_KEY);
+      replaceSessionUrl(null);
+      state.sessionId = '';
+      state.vmId = '';
+      state.noVncUrl = '';
+      state.displayReady = false;
+      state.vncControl = false;
+      state.artifacts = [];
+      state.requestedArtifactPaths = new Set();
+      state.runArtifactPaths = new Set();
+      els.runBtn.disabled = true;
+      els.screenshotBtn.disabled = true;
+      els.suspendBtn.disabled = true;
+      els.openTabBtn.disabled = true;
+      els.fileRefreshBtn.disabled = true;
+      els.createBtn.style.display = 'inline-flex';
+      els.infoSession.textContent = '—';
+      els.infoVm.textContent = '—';
+      els.infoStatus.textContent = 'expired';
+      els.infoNoVnc.textContent = '—';
+      els.fileList.innerHTML = '<div class="file-empty">Computer session expired. Start a new computer.</div>';
+      resetDisplay('Computer expired', 'Start a new computer to open the live desktop.');
+      renderVncControl();
+      try { ArtifactSurface.clear(); } catch (_) {}
+      if (!alreadyExpired) addEvent('tool_failed', message);
+    }
+
+    async function api(path, options = {}) {
+      const { suppressExpire = false, ...fetchOptions } = options;
+      let response;
+      try {
+        response = await fetch(path, {
+          headers: { 'Content-Type': 'application/json', ...(fetchOptions.headers || {}) },
+          ...fetchOptions
+        });
+      } catch (_) {
+        throw new Error(`Local demo API is unreachable at ${path}.`);
+      }
+      if (!response.ok) {
+        const raw = await response.text();
+        const message = cleanApiError(raw);
+        // Don't wipe the session while the user is mid-cancel — cancel can race with
+        // an in-flight call that fails with an "expired" lookalike error, which would
+        // otherwise force a new session and trash the existing VM/sandbox.
+        if (!suppressExpire && !state.cancelled && (isExpiredComputerErrorText(raw) || isExpiredComputerErrorText(message))) {
+          expireCurrentSession(message);
+        }
+        const err = new Error(message);
+        err.status = response.status;
+        err.raw = raw;
+        throw err;
+      }
+      return response.json();
+    }
+    function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    function sessionPath(suffix) {
+      return sessionPathFor(state.providerId, state.sessionId, suffix);
+    }
+
+    function sessionPathFor(providerId, sessionId, suffix) {
+      return `/demo/api/computer/session/${encodeURIComponent(providerId)}/${encodeURIComponent(sessionId)}${suffix}`;
+    }
+
+    async function validateSessionReachable(session, opts = {}) {
+      const { timeoutMs = 30000, intervalMs = 1500 } = opts;
+      const deadline = Date.now() + timeoutMs;
+      let lastErr;
+      while (Date.now() < deadline) {
+        try {
+          await api(sessionPathFor(
+            session.providerId,
+            session.sessionId,
+            `/files/list?path=${encodeURIComponent('/workspace')}`
+          ), { suppressExpire: true });
+          return true;
+        } catch (err) {
+          lastErr = err;
+          // 410 GONE / COLLECTION_NOT_FOUND right after createSession means the VM agent
+          // hasn't booted yet — keep retrying within the readiness window.
+          const status = err && err.status;
+          const transient = status === 410 || status === 404 || status === 502 || status === 503 || status === 504;
+          if (!transient) break;
+          await wait(intervalMs);
+        }
+      }
+      throw lastErr || new Error('Session readiness check timed out.');
+    }
+
+    function sessionFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const providerId = params.get('provider') || params.get('providerId') || '';
+      const sessionId = params.get('session') || params.get('sessionId') || '';
+      return providerId && sessionId ? { providerId, sessionId } : null;
+    }
+
+    function replaceSessionUrl(session) {
+      const url = new URL(window.location.href);
+      if (session && session.providerId && session.sessionId) {
+        url.searchParams.set('provider', session.providerId);
+        url.searchParams.set('session', session.sessionId);
+        if (session.vmId) url.searchParams.set('vm', session.vmId);
+      } else {
+        url.searchParams.delete('provider');
+        url.searchParams.delete('providerId');
+        url.searchParams.delete('session');
+        url.searchParams.delete('sessionId');
+        url.searchParams.delete('vm');
+      }
+      history.replaceState(null, '', url.toString());
+    }
+
+    function renderVncControl() {
+      const canControl = !!state.sessionId && state.displayReady;
+      els.vncControlBtn.disabled = !canControl;
+      els.vncControlBtn.textContent = state.vncControl ? 'Release control' : 'Take control';
+      els.vncControlBtn.classList.toggle('active', state.vncControl);
+      els.infoControl.textContent = state.vncControl ? 'user control' : 'watch-only';
+      els.vncInputShield.classList.toggle('visible', canControl && !state.vncControl);
+    }
+
+    async function setVncControl(control, opts = {}) {
+      if (!state.providerId || !state.sessionId) return;
+      const previous = state.vncControl;
+      els.vncControlBtn.disabled = true;
+      try {
+        await api(sessionPath('/vnc-control'), {
+          method: 'POST',
+          body: JSON.stringify({ control: !!control })
+        });
+        state.vncControl = !!control;
+        setNoVncUrlForControl(state.vncControl, true);
+        renderVncControl();
+        if (!opts.quiet) {
+          addEvent('tool_completed', state.vncControl ? 'User control enabled.' : 'Returned to watch-only mode.');
+        }
+      } catch (error) {
+        state.vncControl = previous;
+        renderVncControl();
+        addEvent('tool_failed', `VNC control failed: ${error.message}`);
+      } finally {
+        renderVncControl();
+      }
+    }
+
+    function formatBytes(value) {
+      const n = Number(value || 0);
+      if (n < 1024) return `${n} B`;
+      if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
+      return `${(n / 1024 / 1024).toFixed(1)} MB`;
+    }
+
+    function parentPath(path) {
+      const clean = (path || '/workspace').replace(/\/+$/, '');
+      const idx = clean.lastIndexOf('/');
+      return idx <= 0 ? '/' : clean.slice(0, idx);
+    }
+    function canGoUp(path) {
+      const clean = (path || '').replace(/\/+$/, '') || '/';
+      return clean !== '/' && !FILE_ROOTS.has(clean);
+    }
+
+    const ArtifactSurface = (() => {
+      let refreshTimer = null;
+      let activeArtifact = null;
+      let lastFocus = null;
+
+      const rendererRegistry = [
+        {
+          id: 'markdown',
+          label: 'Markdown',
+          matches: artifact => artifact.ext === 'md' || artifact.ext === 'markdown' || artifact.mediaType === 'text/markdown',
+          previewable: true,
+          async open(artifact) {
+            const text = await fetchText(artifact.path);
+            openDialog(artifact, [
+              { id: 'preview', label: 'Preview', render: () => {
+                els.artifactDialogBody.className = 'artifact-body';
+                els.artifactDialogBody.innerHTML = `<div class="markdown-preview">${renderMarkdown(text)}</div>`;
+              }},
+              { id: 'raw', label: 'Raw', render: () => renderRaw(text) }
+            ]);
+          }
+        },
+        {
+          id: 'image',
+          label: 'Image',
+          matches: artifact => ['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(artifact.ext) || artifact.mediaType.startsWith('image/'),
+          previewable: true,
+          async open(artifact) {
+            openDialog(artifact, [
+              { id: 'preview', label: 'Preview', render: () => {
+                els.artifactDialogBody.className = 'artifact-body';
+                els.artifactDialogBody.innerHTML = '';
+                const wrap = document.createElement('div');
+                wrap.className = 'artifact-image-wrap';
+                const img = document.createElement('img');
+                img.src = downloadUrl(artifact.path);
+                img.alt = artifact.name;
+                wrap.appendChild(img);
+                els.artifactDialogBody.appendChild(wrap);
+              }}
+            ]);
+          }
+        },
+        {
+          id: 'text',
+          label: 'Text',
+          matches: artifact => artifact.mediaType.startsWith('text/') || ['txt', 'json', 'csv', 'log', 'py', 'js', 'java', 'rs', 'go', 'c', 'cpp', 'h', 'html', 'css', 'xml', 'yaml', 'yml'].includes(artifact.ext),
+          previewable: true,
+          async open(artifact) {
+            const text = await fetchText(artifact.path);
+            openDialog(artifact, [
+              { id: 'raw', label: 'Raw', render: () => renderRaw(text) }
+            ]);
+          }
+        },
+        {
+          id: 'archive',
+          label: 'Archive',
+          matches: artifact => ['zip', 'tar', 'gz', 'tgz'].includes(artifact.ext) || ['application/zip', 'application/gzip', 'application/x-tar'].includes(artifact.mediaType),
+          previewable: false
+        },
+        {
+          id: 'binary',
+          label: 'File',
+          matches: () => true,
+          previewable: false
+        }
+      ];
+
+      function basename(path) {
+        const clean = String(path || '').replace(/\/+$/, '');
+        return clean.slice(clean.lastIndexOf('/') + 1) || clean || 'artifact';
+      }
+
+      function extension(path) {
+        const name = basename(path).toLowerCase();
+        const idx = name.lastIndexOf('.');
+        return idx > 0 ? name.slice(idx + 1) : '';
+      }
+
+      function inferMediaType(path) {
+        const ext = extension(path);
+        if (ext === 'md' || ext === 'markdown') return 'text/markdown';
+        if (ext === 'png') return 'image/png';
+        if (ext === 'jpg' || ext === 'jpeg') return 'image/jpeg';
+        if (ext === 'gif') return 'image/gif';
+        if (ext === 'webp') return 'image/webp';
+        if (ext === 'zip') return 'application/zip';
+        if (['txt', 'log', 'csv'].includes(ext)) return 'text/plain';
+        if (ext === 'json') return 'application/json';
+        return 'application/octet-stream';
+      }
+
+      function normalize(entry) {
+        const path = String(entry.path || '');
+        const mediaType = String(entry.mediaType || inferMediaType(path));
+        const artifact = {
+          name: entry.name || basename(path),
+          path,
+          type: entry.type || 'file',
+          size: Number(entry.size ?? entry.sizeBytes ?? 0),
+          mediaType,
+          ext: extension(path),
+          modifiedAt: entry.modified || entry.modifiedAt || (entry.mtime ? new Date(Number(entry.mtime) * 1000).toISOString() : '')
+        };
+        artifact.renderer = rendererRegistry.find(renderer => renderer.matches(artifact)) || rendererRegistry[rendererRegistry.length - 1];
+        artifact.kind = artifact.renderer.id;
+        artifact.label = artifact.renderer.label;
+        artifact.previewable = artifact.renderer.previewable;
+        return artifact;
+      }
+
+      function downloadUrl(path) {
+        return sessionPath(`/files?path=${encodeURIComponent(path)}`);
+      }
+
+      async function fetchText(path) {
+        const response = await fetch(downloadUrl(path), { cache: 'no-store' });
+        if (!response.ok) {
+          const raw = await response.text();
+          const message = cleanApiError(raw);
+          if (isExpiredComputerErrorText(raw) || isExpiredComputerErrorText(message)) {
+            expireCurrentSession(message);
+          }
+          throw new Error(message);
+        }
+        return response.text();
+      }
+
+      function safeHref(value) {
+        try {
+          const url = new URL(value, window.location.href);
+          return ['http:', 'https:', 'mailto:'].includes(url.protocol) ? url.href : '#';
+        } catch (_) {
+          return '#';
+        }
+      }
+
+      function renderInline(text) {
+        const input = String(text ?? '');
+        const token = new RegExp('(\\[' + '([^\\]]+)' + '\\]\\(([^)]+)\\)|`([^`]+)`)', 'g');
+        let out = '';
+        let last = 0;
+        let match;
+        while ((match = token.exec(input)) !== null) {
+          out += escapeHtml(input.slice(last, match.index));
+          if (match[4] !== undefined) {
+            out += `<code>${escapeHtml(match[4])}</code>`;
+          } else {
+            const href = safeHref(match[3].trim());
+            out += `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(match[2])}</a>`;
+          }
+          last = token.lastIndex;
+        }
+        return out + escapeHtml(input.slice(last));
+      }
+
+      function renderMarkdown(markdown) {
+        const lines = String(markdown ?? '').replace(/\r\n/g, '\n').split('\n');
+        const html = [];
+        let paragraph = [];
+        let listType = null;
+        let inFence = false;
+        let fence = [];
+
+        const flushParagraph = () => {
+          if (!paragraph.length) return;
+          html.push(`<p>${renderInline(paragraph.join(' '))}</p>`);
+          paragraph = [];
+        };
+        const closeList = () => {
+          if (!listType) return;
+          html.push(`</${listType}>`);
+          listType = null;
+        };
+
+        for (const line of lines) {
+          const fenceMatch = line.match(/^```/);
+          if (fenceMatch) {
+            if (inFence) {
+              html.push(`<pre><code>${escapeHtml(fence.join('\n'))}</code></pre>`);
+              fence = [];
+              inFence = false;
+            } else {
+              flushParagraph();
+              closeList();
+              inFence = true;
+            }
+            continue;
+          }
+          if (inFence) {
+            fence.push(line);
+            continue;
+          }
+          if (!line.trim()) {
+            flushParagraph();
+            closeList();
+            continue;
+          }
+          const heading = line.match(/^(#{1,3})\s+(.+)$/);
+          if (heading) {
+            flushParagraph();
+            closeList();
+            const level = heading[1].length;
+            html.push(`<h${level}>${renderInline(heading[2])}</h${level}>`);
+            continue;
+          }
+          const ordered = line.match(/^\s*\d+\.\s+(.+)$/);
+          const unordered = line.match(/^\s*[-*]\s+(.+)$/);
+          if (ordered || unordered) {
+            flushParagraph();
+            const nextType = ordered ? 'ol' : 'ul';
+            if (listType !== nextType) {
+              closeList();
+              html.push(`<${nextType}>`);
+              listType = nextType;
+            }
+            html.push(`<li>${renderInline((ordered || unordered)[1])}</li>`);
+            continue;
+          }
+          closeList();
+          paragraph.push(line.trim());
+        }
+        if (inFence) html.push(`<pre><code>${escapeHtml(fence.join('\n'))}</code></pre>`);
+        flushParagraph();
+        closeList();
+        return html.join('\n') || '<p></p>';
+      }
+
+      function renderRaw(text) {
+        els.artifactDialogBody.className = 'artifact-body';
+        els.artifactDialogBody.innerHTML = '';
+        const pre = document.createElement('pre');
+        pre.className = 'artifact-raw';
+        pre.textContent = text;
+        els.artifactDialogBody.appendChild(pre);
+      }
+
+      function openDialog(artifact, tabs) {
+        activeArtifact = artifact;
+        lastFocus = document.activeElement;
+        els.artifactDialogName.textContent = artifact.name;
+        els.artifactDialogPath.textContent = artifact.path;
+        els.artifactDialogDownload.href = downloadUrl(artifact.path);
+        els.artifactDialogDownload.download = artifact.name;
+        els.artifactDialogTabs.innerHTML = '';
+        for (const tab of tabs) {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'artifact-view-tab';
+          button.textContent = tab.label;
+          button.addEventListener('click', () => activateDialogTab(button, tab));
+          els.artifactDialogTabs.appendChild(button);
+        }
+        document.body.classList.add('modal-open');
+        els.artifactModal.hidden = false;
+        const first = els.artifactDialogTabs.querySelector('button');
+        if (first) first.click();
+        els.artifactDialogClose.focus();
+      }
+
+      function activateDialogTab(button, tab) {
+        els.artifactDialogTabs.querySelectorAll('.artifact-view-tab').forEach(item => item.classList.toggle('active', item === button));
+        try {
+          tab.render();
+        } catch (error) {
+          renderRaw(`Could not render artifact: ${error.message}`);
+        }
+      }
+
+      function closeDialog() {
+        els.artifactModal.hidden = true;
+        document.body.classList.remove('modal-open');
+        activeArtifact = null;
+        if (lastFocus && typeof lastFocus.focus === 'function') {
+          try { lastFocus.focus(); } catch (_) {}
+        }
+      }
+
+      function buttonFor(artifact, compact = false) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = compact ? 'artifact-chip-main' : 'artifact-action';
+        button.textContent = compact ? '' : (artifact.previewable ? 'Open' : 'Details');
+        button.disabled = !artifact.path;
+        button.addEventListener('click', () => open(artifact));
+        return button;
+      }
+
+      function downloadLink(artifact, iconOnly = false) {
+        const link = document.createElement('a');
+        link.href = downloadUrl(artifact.path);
+        link.download = artifact.name;
+        link.className = iconOnly ? 'artifact-download' : 'artifact-action';
+        link.title = `Download ${artifact.name}`;
+        link.innerHTML = iconOnly ? iconSvg('download') : 'Download';
+        return link;
+      }
+
+      function render() {
+        const artifacts = state.artifacts;
+        const count = artifacts.length;
+        els.artifactShelf.hidden = count === 0;
+        els.artifactCount.textContent = String(count);
+        els.tabArtifactCount.textContent = String(count);
+        els.artifactBrowserCount.textContent = count ? `${count} artifact${count === 1 ? '' : 's'}` : 'No artifacts';
+        els.artifactRefreshBtn.disabled = !state.sessionId;
+        els.artifactBrowserRefreshBtn.disabled = !state.sessionId;
+
+        els.artifactList.innerHTML = '';
+        els.artifactBrowserList.innerHTML = '';
+
+        if (!count) {
+          els.artifactBrowserList.innerHTML = '<div class="file-empty">Generated files will appear here after a run.</div>';
+          return;
+        }
+
+        for (const artifact of artifacts.slice(0, 6)) {
+          const chip = document.createElement('div');
+          chip.className = 'artifact-chip';
+          const main = buttonFor(artifact, true);
+          main.innerHTML = `
+            <span class="artifact-name">${escapeHtml(artifact.name)}</span>
+            <span class="artifact-meta">${escapeHtml(artifact.label)} · ${escapeHtml(formatBytes(artifact.size))}</span>`;
+          chip.append(main, downloadLink(artifact, true));
+          els.artifactList.appendChild(chip);
+        }
+
+        for (const artifact of artifacts) {
+          const row = document.createElement('div');
+          row.className = 'artifact-item';
+          const main = document.createElement('div');
+          main.className = 'artifact-item-main';
+          main.innerHTML = `
+            <span class="artifact-name">${escapeHtml(artifact.name)}</span>
+            <span class="artifact-meta">${escapeHtml(artifact.label)} · ${escapeHtml(formatBytes(artifact.size))}</span>
+            <span class="artifact-path">${escapeHtml(artifact.path)}</span>`;
+          row.append(main, buttonFor(artifact), downloadLink(artifact));
+          els.artifactBrowserList.appendChild(row);
+        }
+      }
+
+      function clear() {
+        state.artifacts = [];
+        render();
+      }
+
+      function currentPaths() {
+        return new Set([...(state.requestedArtifactPaths || []), ...(state.runArtifactPaths || [])]);
+      }
+
+      function rootsFor(paths) {
+        const roots = new Set();
+        for (const path of paths) {
+          const parent = parentPath(path);
+          if (parent && parent !== '/') roots.add(parent);
+        }
+        for (const root of ARTIFACT_SURFACE_ROOTS) roots.add(root);
+        return [...roots];
+      }
+
+      function modifiedDuringRun(artifact) {
+        if (!state.runStartedAt || !artifact.modifiedAt) return false;
+        const ts = Date.parse(artifact.modifiedAt);
+        return Number.isFinite(ts) && ts >= state.runStartedAt - 5000;
+      }
+
+      async function refresh(opts = {}) {
+        if (!state.providerId || !state.sessionId) {
+          clear();
+          return [];
+        }
+        const paths = currentPaths();
+        const currentOnly = opts.currentOnly !== false;
+        if (currentOnly && !paths.size && !state.runStartedAt) {
+          clear();
+          return [];
+        }
+        const byPath = new Map();
+        for (const root of rootsFor(paths)) {
+          try {
+            const result = await api(sessionPath(`/files/list?path=${encodeURIComponent(root)}`));
+            const entries = Array.isArray(result.entries) ? result.entries : [];
+            for (const entry of entries) {
+              if (entry.type === 'directory' || !entry.path) continue;
+              const artifact = normalize(entry);
+              if (currentOnly && paths.size && !paths.has(artifact.path)) continue;
+              if (currentOnly && !paths.size && !modifiedDuringRun(artifact)) continue;
+              byPath.set(artifact.path, artifact);
+            }
+          } catch (error) {
+            if (isExpiredComputerErrorText(error.message)) {
+              clear();
+              return [];
+            }
+            // The artifact folder is optional before an agent writes a deliverable.
+          }
+        }
+        state.artifacts = Array.from(byPath.values())
+          .sort((a, b) => score(b) - score(a) || a.name.localeCompare(b.name));
+        render();
+        if (!opts.quiet && state.artifacts.length) {
+          addEvent('tool_completed', `Artifact Surface found ${state.artifacts.length} generated file${state.artifacts.length === 1 ? '' : 's'}.`);
+        }
+        return state.artifacts;
+      }
+
+      function score(artifact) {
+        let value = 0;
+        if (artifact.path.startsWith('/workspace/agent-demo/')) value += 30;
+        if (artifact.previewable) value += 10;
+        if (artifact.kind === 'markdown') value += 8;
+        if (artifact.kind === 'image') value += 6;
+        return value;
+      }
+
+      function scheduleRefresh(delay = 500) {
+        if (refreshTimer) clearTimeout(refreshTimer);
+        refreshTimer = setTimeout(() => {
+          refreshTimer = null;
+          refresh({ quiet: true }).catch(() => {});
+        }, delay);
+      }
+
+      function renderTimelineCard(artifacts = state.artifacts) {
+        if (!artifacts.length) return;
+        const runId = state.runId || 'session';
+        const existing = Array.from(els.timeline.querySelectorAll('.artifact-dod-card'))
+          .find(item => item.dataset.runId === runId);
+        if (existing) existing.remove();
+
+        const card = document.createElement('div');
+        card.className = 'artifact-dod-card';
+        card.dataset.runId = runId;
+        const head = document.createElement('div');
+        head.className = 'artifact-shelf-head';
+        head.innerHTML = `
+          <div class="artifact-title">
+            <span>Artifacts ready</span>
+            <span class="count">${escapeHtml(String(artifacts.length))}</span>
+          </div>`;
+        const openTab = document.createElement('button');
+        openTab.type = 'button';
+        openTab.className = 'text-btn';
+        openTab.textContent = 'Open artifacts';
+        openTab.addEventListener('click', () => {
+          document.querySelector('.tab[data-tab="artifacts"]')?.click();
+        });
+        head.appendChild(openTab);
+        card.appendChild(head);
+
+        const list = document.createElement('div');
+        list.className = 'artifact-dod-list';
+        for (const artifact of artifacts.slice(0, 5)) {
+          const row = document.createElement('div');
+          row.className = 'artifact-item';
+          const main = document.createElement('div');
+          main.className = 'artifact-item-main';
+          main.innerHTML = `
+            <span class="artifact-name">${escapeHtml(artifact.name)}</span>
+            <span class="artifact-meta">${escapeHtml(artifact.label)} · ${escapeHtml(formatBytes(artifact.size))}</span>`;
+          row.append(main, buttonFor(artifact), downloadLink(artifact));
+          list.appendChild(row);
+        }
+        card.appendChild(list);
+        els.timeline.appendChild(card);
+        if (state.autoScroll) scrollToLatest();
+      }
+
+      async function open(artifactLike) {
+        const artifact = normalize(artifactLike);
+        if (!artifact.previewable) {
+          openDialog(artifact, [
+            { id: 'download', label: 'Download', render: () => {
+              els.artifactDialogBody.className = 'artifact-body';
+              els.artifactDialogBody.innerHTML = `
+                <div class="file-empty">This file type is available as a download. A specialized renderer can be added to Artifact Surface later.</div>`;
+            }}
+          ]);
+          return;
+        }
+        try {
+          await artifact.renderer.open(artifact);
+        } catch (error) {
+          openDialog(artifact, [
+            { id: 'error', label: 'Error', render: () => renderRaw(`Could not open artifact:\n${error.message}`) }
+          ]);
+        }
+      }
+
+      function maybeRefreshFromEvent(type, message, metadata = {}) {
+        if (type === 'task_completed') {
+          for (const path of extractArtifactPaths(message)) rememberRunArtifactPath(path);
+          scheduleRefresh(200);
+          return;
+        }
+        if (type !== 'tool_completed') return;
+        const tool = String(metadata.tool || metadata.name || '').toLowerCase();
+        if (metadata.path) rememberRunArtifactPath(metadata.path);
+        for (const path of extractArtifactPaths(message)) rememberRunArtifactPath(path);
+        const content = `${tool} ${message || ''}`.toLowerCase();
+        if (content.includes('write_file') || content.includes('wrote file') || content.includes('zip') || content.includes('archive')) {
+          scheduleRefresh(500);
+        }
+      }
+
+      return {
+        clear,
+        refresh,
+        render,
+        open,
+        normalize,
+        downloadUrl,
+        maybeRefreshFromEvent,
+        renderTimelineCard,
+        closeDialog
+      };
+    })();
+
+    function downloadFile(path) {
+      if (!state.providerId || !state.sessionId || !path) return;
+      window.location.href = sessionPath(`/files?path=${encodeURIComponent(path)}`);
+    }
+
+    async function refreshFiles(path = els.filePath.value || state.filePath || '/workspace') {
+      if (!state.providerId || !state.sessionId) {
+        els.fileList.innerHTML = '<div class="file-empty">No session.</div>';
+        return;
+      }
+      state.filePath = path;
+      els.filePath.value = path;
+      els.fileRefreshBtn.disabled = true;
+      els.fileList.innerHTML = '<div class="file-empty">Loading…</div>';
+      try {
+        const result = await api(sessionPath(`/files/list?path=${encodeURIComponent(path)}`));
+        const entries = Array.isArray(result.entries) ? result.entries : [];
+        if (!entries.length) {
+          els.fileList.innerHTML = '<div class="file-empty">Empty folder.</div>';
+          return;
+        }
+        els.fileList.innerHTML = '';
+        if (canGoUp(path)) {
+          const up = document.createElement('div');
+          up.className = 'file-row';
+          up.innerHTML = `<span class="name">../</span><span class="meta">folder</span><button type="button">Open</button><span></span>`;
+          up.querySelector('button').addEventListener('click', () => refreshFiles(parentPath(path)));
+          els.fileList.appendChild(up);
+        }
+        for (const entry of entries) {
+          const row = document.createElement('div');
+          row.className = 'file-row';
+          const isDir = entry.type === 'directory';
+          const name = document.createElement('span');
+          name.className = 'name';
+          name.textContent = isDir ? `${entry.name}/` : entry.name;
+          const meta = document.createElement('span');
+          meta.className = 'meta';
+          meta.textContent = isDir ? 'folder' : formatBytes(entry.size);
+          const action = document.createElement('button');
+          action.type = 'button';
+          action.textContent = isDir ? 'Open' : 'View';
+          action.addEventListener('click', () => isDir ? refreshFiles(entry.path) : ArtifactSurface.open(entry));
+          if (isDir) {
+            row.append(name, meta, action, document.createElement('span'));
+          } else {
+            const download = document.createElement('a');
+            download.className = 'file-download';
+            download.href = ArtifactSurface.downloadUrl(entry.path);
+            download.download = entry.name || entry.path.split('/').pop() || 'artifact';
+            download.textContent = 'Download';
+            row.append(name, meta, action, download);
+          }
+          els.fileList.appendChild(row);
+        }
+      } catch (error) {
+        els.fileList.innerHTML = '';
+        const failed = document.createElement('div');
+        failed.className = 'file-empty';
+        failed.textContent = `File API failed: ${error.message}`;
+        els.fileList.appendChild(failed);
+        addEvent('tool_failed', `File API failed: ${error.message}`);
+      } finally {
+        els.fileRefreshBtn.disabled = !state.sessionId;
+      }
+    }
+
+    /* ---------------- Display / noVNC ---------------- */
+    function noVncUrlWithAutoconnect(value, control = false) {
+      if (!value) return '';
+      const url = new URL(value, window.location.href);
+      url.searchParams.set('view_only', control ? '0' : '1');
+      if (url.port === '6080') {
+        url.pathname = '/vnc_lite.html';
+        url.searchParams.set('host', url.searchParams.get('host') || url.hostname);
+        url.searchParams.set('port', url.searchParams.get('port') || '6080');
+        url.searchParams.set('path', url.searchParams.get('path') || 'websockify');
+        url.searchParams.set('scale', 'true');
+        url.searchParams.delete('autoconnect');
+        url.searchParams.delete('resize');
+        return url.toString();
+      }
+      if (!url.pathname.includes('/v1/computers/')) {
+        url.searchParams.set('host', url.searchParams.get('host') || url.hostname);
+        url.searchParams.set('port', url.searchParams.get('port') || url.port || '6080');
+        url.searchParams.set('path', url.searchParams.get('path') || 'websockify');
+      }
+      url.searchParams.set('autoconnect', 'true');
+      // 'scale' fits the full remote display into the iframe (no cropping);
+      // 'remote' would resize the remote desktop to the iframe size, which
+      // shrinks the actual sandbox resolution and shows ~50% of the window.
+      url.searchParams.set('resize', 'scale');
+      return url.toString();
+    }
+    function setNoVncUrlForControl(control, reloadFrame = false) {
+      if (!state.noVncUrl) return '';
+      const viewerUrl = noVncUrlWithAutoconnect(state.noVncUrl, control);
+      state.noVncUrl = viewerUrl;
+      els.infoNoVnc.textContent = viewerUrl || '—';
+      if (reloadFrame && state.displayReady) {
+        els.vncFrame.src = viewerUrl;
+      }
+      return viewerUrl;
+    }
+    function isDirectNoVncUrl(value) {
+      try { return new URL(value, window.location.href).port === '6080'; } catch (_) { return false; }
+    }
+
+    function displayState(title, message, opts = {}) {
+      els.emptyStage.style.display = 'grid';
+      els.displayTitle.textContent = title;
+      els.displayMessage.textContent = message;
+      els.displaySpinner.hidden = !opts.loading;
+      els.displayRetry.style.display = opts.retry ? 'inline-flex' : 'none';
+    }
+    function resetDisplay(title = 'Boot a computer', message = "Spin up a Firecracker microVM with a live noVNC display — Nubian's agent will drive it for you.") {
+      state.displayReady = false;
+      state.vncControl = false;
+      state.displayAttempt += 1;
+      els.vncFrame.removeAttribute('src');
+      els.vncFrame.style.visibility = 'hidden';
+      els.openTabBtn.disabled = true;
+      renderVncControl();
+      displayState(title, message);
+    }
+
+    async function screenshotReady(providerId, sessionId) {
+      const url = `/demo/api/computer/session/${encodeURIComponent(providerId)}/${encodeURIComponent(sessionId)}/screenshot?ready=${Date.now()}`;
+      const response = await fetch(url, { cache: 'no-store' });
+      if (!response.ok) return false;
+      const type = response.headers.get('content-type') || '';
+      return type.includes('image/') || type.includes('application/octet-stream');
+    }
+
+    async function waitForDisplay(session) {
+      if (!session.noVncUrl || session.status !== 'RUNNING') {
+        resetDisplay('Display unavailable', 'This session did not return a noVNC endpoint.');
+        return;
+      }
+      const attempt = ++state.displayAttempt;
+      state.displayReady = false;
+      els.vncFrame.style.visibility = 'hidden';
+      els.openTabBtn.disabled = true;
+
+      if (isDirectNoVncUrl(session.noVncUrl) || session.providerId === 'android-agent') {
+        displayState('Connecting noVNC bridge', 'Opening the host-level VNC channel…', { loading: true });
+        await connectNoVnc(session, attempt);
+        return;
+      }
+      displayState('Booting display', 'Waiting for the guest desktop, VNC service, and screenshot endpoint…', { loading: true });
+
+      const startedAt = Date.now();
+      let checks = 0;
+      while (Date.now() - startedAt < 90000) {
+        if (attempt !== state.displayAttempt) return;
+        checks += 1;
+        try {
+          if (await screenshotReady(session.providerId, session.sessionId)) {
+            if (attempt !== state.displayAttempt) return;
+            displayState('Connecting noVNC', 'Display is live. Opening viewer…', { loading: true });
+            await connectNoVnc(session, attempt);
+            return;
+          }
+        } catch (_) { /* booting */ }
+        const seconds = Math.max(1, Math.round((Date.now() - startedAt) / 1000));
+        displayState('Booting display', `Still booting the live desktop · ${seconds}s`, { loading: true });
+        await wait(checks < 6 ? 1500 : 3000);
+      }
+      if (attempt !== state.displayAttempt) return;
+      els.vncFrame.style.visibility = 'hidden';
+      displayState('Display still starting', 'The VM is running, but the desktop did not become ready within 90 seconds.', { retry: true });
+      addEvent('tool_failed', 'Display did not become ready within 90 seconds.');
+    }
+
+    async function connectNoVnc(session, attempt) {
+      const viewerUrl = noVncUrlWithAutoconnect(session.noVncUrl, state.vncControl);
+      state.noVncUrl = viewerUrl;
+      els.infoNoVnc.textContent = viewerUrl;
+      await new Promise(resolve => {
+        const done = () => { els.vncFrame.removeEventListener('load', done); resolve(); };
+        els.vncFrame.addEventListener('load', done);
+        els.vncFrame.src = viewerUrl;
+        setTimeout(done, 5000);
+      });
+      if (attempt !== state.displayAttempt) return;
+      await wait(900);
+      if (attempt !== state.displayAttempt) return;
+      state.displayReady = true;
+      els.vncFrame.style.visibility = 'visible';
+      els.emptyStage.style.display = 'none';
+      els.openTabBtn.disabled = false;
+      renderVncControl();
+      addEvent('tool_completed', 'Display ready.', { noVncUrl: viewerUrl });
+    }
+
+    /* ---------------- Session management ---------------- */
+    function rememberSession(session) {
+      if (session && session.status === 'RUNNING') replaceSessionUrl(session);
+      localStorage.removeItem(SESSION_KEY);
+    }
+
+    function setSession(session) {
+      state.providerId = session.providerId;
+      state.sessionId = session.sessionId;
+      state.vmId = session.vmId;
+      state.vncControl = false;
+      state.noVncUrl = noVncUrlWithAutoconnect(session.noVncUrl, state.vncControl);
+      rememberSession(session);
+
+      els.composerHint.textContent = session.status === 'RUNNING'
+        ? `session · ${session.sessionId.slice(0, 18)}…`
+        : `session · ${session.status}`;
+      els.runBtn.disabled = session.status !== 'RUNNING';
+      els.screenshotBtn.disabled = session.status !== 'RUNNING';
+      els.suspendBtn.disabled = session.status !== 'RUNNING';
+      els.openTabBtn.disabled = !state.displayReady;
+      els.fileRefreshBtn.disabled = session.status !== 'RUNNING';
+      els.createBtn.style.display = session.status === 'RUNNING' ? 'none' : 'inline-flex';
+
+      els.infoProvider.textContent = session.providerId || '—';
+      els.infoSession.textContent = session.sessionId || '—';
+      els.infoVm.textContent = session.vmId || '—';
+      els.infoStatus.textContent = session.status || '—';
+      els.infoNoVnc.textContent = state.noVncUrl || '—';
+      renderVncControl();
+
+      if (session.status !== 'RUNNING') {
+        resetDisplay('Computer suspended', 'Resume or start a new computer to open the live desktop.');
+        els.fileList.innerHTML = '<div class="file-empty">No running session.</div>';
+        ArtifactSurface.clear();
+      } else if (session.providerId === 'android-agent') {
+        // Android emulator has no filesystem capability — skip the file API
+        // calls that would otherwise surface a noisy "File API failed" toast.
+        els.fileList.innerHTML = '<div class="file-empty">Files are not available on the Android emulator.</div>';
+        els.fileRefreshBtn.disabled = true;
+      } else {
+        refreshFiles(state.filePath).catch(() => {});
+        ArtifactSurface.refresh({ quiet: true }).catch(() => {});
+      }
+    }
+
+    async function openListedSession(session) {
+      try {
+        await validateSessionReachable(session);
+        setSession(session);
+        addEvent('tool_completed', 'Attached to selected computer session.', { sessionId: session.sessionId, vmId: session.vmId || '' });
+        waitForDisplay({ ...session, noVncUrl: state.noVncUrl });
+      } catch (error) {
+        if (isExpiredComputerErrorText(error.message)) {
+          addEvent('tool_failed', `Selected session is expired: ${session.sessionId}`);
+          await refreshSessionList();
+          return;
+        }
+        addEvent('tool_failed', `Could not attach selected session: ${error.message}`);
+      }
+    }
+
+    async function refreshSessionList() {
+      if (!els.sessionList) return;
+      els.sessionRefreshBtn.disabled = true;
+      try {
+        const sessions = await api('/demo/api/computer/sessions');
+        const items = (Array.isArray(sessions) ? sessions : [])
+          .slice()
+          .reverse()
+          .slice(0, 8);
+        els.sessionList.innerHTML = '';
+        if (!items.length) {
+          els.sessionList.innerHTML = '<div class="file-empty">No previous sessions.</div>';
+          return;
+        }
+        for (const session of items) {
+          const row = document.createElement('div');
+          row.className = 'file-row';
+          const name = document.createElement('span');
+          name.className = 'name';
+          name.textContent = session.vmId || session.sessionId;
+          const meta = document.createElement('span');
+          meta.className = 'meta';
+          meta.textContent = session.status || 'unknown';
+          const open = document.createElement('button');
+          open.type = 'button';
+          open.textContent = 'Open';
+          open.disabled = session.status !== 'RUNNING';
+          open.addEventListener('click', () => openListedSession(session));
+          const link = document.createElement('a');
+          link.className = 'file-download';
+          const url = new URL(window.location.href);
+          url.searchParams.set('provider', session.providerId);
+          url.searchParams.set('session', session.sessionId);
+          if (session.vmId) url.searchParams.set('vm', session.vmId);
+          link.href = url.toString();
+          link.textContent = 'URL';
+          row.append(name, meta, open, link);
+          els.sessionList.appendChild(row);
+        }
+      } catch (error) {
+        els.sessionList.innerHTML = `<div class="file-empty">Could not load sessions: ${escapeHtml(error.message)}</div>`;
+      } finally {
+        els.sessionRefreshBtn.disabled = false;
+      }
+    }
+
+    async function attachExistingSession() {
+      const target = sessionFromUrl();
+      if (!target) return false;
+      try {
+        const sessions = await api('/demo/api/computer/sessions');
+        const session = (Array.isArray(sessions) ? sessions : []).find(s =>
+          s.status === 'RUNNING' && s.providerId === target.providerId && s.sessionId === target.sessionId
+        );
+        if (!session) return false;
+        try {
+          await validateSessionReachable(session);
+        } catch (error) {
+          if (isExpiredComputerErrorText(error.message)) {
+            localStorage.removeItem(SESSION_KEY);
+            replaceSessionUrl(null);
+            return false;
+          }
+          throw error;
+        }
+        setSession(session);
+        addEvent('tool_completed', 'Attached to computer session from URL.', { sessionId: session.sessionId, vmId: session.vmId });
+        waitForDisplay({ ...session, noVncUrl: state.noVncUrl });
+        return true;
+      } catch (error) {
+        addEvent('tool_failed', `Could not attach existing session: ${error.message}`);
+        return false;
+      }
+    }
+
+    async function autoBootIfNeeded() {
+      const attached = await attachExistingSession();
+      if (attached) return;
+      // No explicit URL session — boot a fresh computer.
+      await createSession();
+    }
+
+    function requestedProviderId() {
+      if (state.forcedProviderId) return state.forcedProviderId;
+      const params = new URLSearchParams(window.location.search);
+      return params.get('provider') || params.get('providerId') || '';
+    }
+
+    function buildCreateSessionPayload(forcedProviderId) {
+      const providerId = forcedProviderId || requestedProviderId();
+      if (providerId === 'computer-agent') {
+        // Universal computer-agent provider is single-guest; no per-session VM
+        // metadata is needed (host/ports come from server-side config).
+        return { providerId, metadata: {} };
+      }
+      if (providerId === 'android-agent') {
+        // Android emulator (REST/adb agent) — single-guest; the noVNC URL is
+        // injected server-side into the session metadata.
+        return { providerId, metadata: {} };
+      }
+      // Default: firecracker per-session FlyVM provisioning.
+      return {
+        providerId: providerId || undefined,
+        metadata: {
+          'flyvm.memMib': '1024',
+          'flyvm.vcpu': '1',
+          'flyvm.dataDiskMib': '3072',
+          'flyvm.requiredProvider': 'firecracker'
+        }
+      };
+    }
+
+    async function createSession() {
+      els.createBtn.disabled = true;
+      state.requestedArtifactPaths = new Set();
+      state.runArtifactPaths = new Set();
+      state.runStartedAt = 0;
+      resetEvents();
+      setRunStatus('running');
+      const providerLabel = requestedProviderId() === 'computer-agent'
+          ? 'Connecting to Ubuntu desktop via computer-agent…'
+          : requestedProviderId() === 'android-agent'
+              ? 'Connecting to Android emulator via android-agent…'
+              : 'Provisioning a Firecracker microVM…';
+      addEvent('task_created', providerLabel);
+      resetDisplay('Booting computer', 'Provisioning the VM and preparing the live desktop…');
+      displayState('Booting computer', 'Provisioning the VM and preparing the live desktop…', { loading: true });
+      try {
+        const session = await api('/demo/api/computer/session', {
+          method: 'POST',
+          body: JSON.stringify(buildCreateSessionPayload())
+        });
+        setSession(session);
+        refreshSessionList().catch(() => {});
+        setRunStatus('done');
+        addEvent('tool_completed', 'Computer is running.', { vmId: session.vmId, noVncUrl: state.noVncUrl });
+        waitForDisplay({ ...session, noVncUrl: state.noVncUrl });
+      } catch (error) {
+        addEvent('tool_failed', error.message);
+        setRunStatus('failed');
+        els.createBtn.disabled = false;
+        resetDisplay('Computer failed to start', 'The session could not be created. Check the timeline for details.');
+      }
+    }
+
+    function setRunUiRunning(running) {
+      els.runBtn.disabled = running;
+      els.cancelBtn.style.display = running ? 'inline-flex' : 'none';
+    }
+
+    async function runTask(opts = {}) {
+      const promptText = els.prompt.value;
+      if (!promptText.trim()) return;
+      state.cancelled = false;
+      state.runStartedAt = Date.now();
+      state.requestedArtifactPaths = extractArtifactPaths(promptText);
+      state.runArtifactPaths = new Set(state.requestedArtifactPaths);
+      ArtifactSurface.clear();
+      setRunUiRunning(true);
+      if (!opts.preserveTimeline) resetEvents();
+      setRunStatus('running');
+      if (!opts.preserveTimeline) addEvent('message_generated', promptText);
+      try {
+        // Routed at the CodeAct WebController (com.nubian.ai.app): single
+        // python tool, four-globals contract, OCR-grounded clicks. Session,
+        // screenshot, and file-browser routes remain under /demo/api/computer/*.
+        const run = await api('/api/agent/task', {
+          method: 'POST',
+          body: JSON.stringify({ prompt: promptText })
+        });
+        state.runId = run.runId;
+        els.infoRun.textContent = run.runId;
+        const events = new EventSource(`/api/agent/runs/${run.runId}/events`);
+        state.events = events;
+        events.addEventListener('run-event', async e => {
+          const event = JSON.parse(e.data);
+          if (state.cancelled && event.type !== 'task_cancelled') return;
+          addEvent(event.type, event.message, event.metadata || {});
+          if (event.type === 'task_completed' || event.type === 'task_failed' || event.type === 'task_cancelled') {
+            events.close();
+            state.events = null;
+            setRunStatus(event.type === 'task_completed' ? 'done' : event.type === 'task_cancelled' ? 'cancelled' : 'failed');
+            setRunUiRunning(false);
+            reloadDisplayFrame();
+            if (event.type === 'task_completed') {
+              ArtifactSurface.refresh({ quiet: true })
+                .then(artifacts => ArtifactSurface.renderTimelineCard(artifacts))
+                .catch(() => {});
+            }
+
+            // Auto-recover: if the run failed because the VM was unreachable, boot a new VM
+            // and re-run the same prompt once. (This matches Manus-style transparent recovery.)
+            // Skip auto-recovery when the user pressed Cancel — otherwise we burn a fresh VM
+            // for a run the user explicitly stopped.
+            const finishReason = (event.metadata && event.metadata.finishReason) || '';
+            if (event.type === 'task_failed' && finishReason === 'vm_unreachable' && !opts.alreadyRecovered && !state.cancelled) {
+              addEvent('task_created', 'VM expired — auto-recovering: booting a fresh computer and re-running the task.');
+              try {
+                await createSessionInline();
+                await runTask({ preserveTimeline: true, alreadyRecovered: true });
+              } catch (err) {
+                addEvent('tool_failed', `Auto-recovery failed: ${err.message}`);
+              }
+            }
+          }
+        });
+        events.onerror = () => {
+          if (state.cancelled) return;
+          events.close();
+          state.events = null;
+          setRunStatus('failed');
+          setRunUiRunning(false);
+        };
+      } catch (error) {
+        addEvent('tool_failed', error.message);
+        setRunStatus('failed');
+        setRunUiRunning(false);
+      }
+    }
+
+    async function createSessionInline() {
+      const providerLabel = requestedProviderId() === 'computer-agent'
+          ? 'Reconnecting Ubuntu desktop via computer-agent…'
+          : requestedProviderId() === 'android-agent'
+              ? 'Reconnecting Android emulator via android-agent…'
+              : 'Booting fresh Firecracker microVM…';
+      addEvent('tool_called', providerLabel, { tool: 'create_session' });
+      const session = await api('/demo/api/computer/session', {
+        method: 'POST',
+        body: JSON.stringify(buildCreateSessionPayload())
+      });
+      setSession(session);
+      refreshSessionList().catch(() => {});
+      addEvent('tool_completed', 'Fresh computer is running.', { vmId: session.vmId });
+      waitForDisplay({ ...session, noVncUrl: state.noVncUrl });
+    }
+
+    function cancelTask() {
+      if (!state.events && state.runStatus !== 'running') return;
+      state.cancelled = true;
+      // Tell the backend to interrupt the worker thread for this run. The
+      // server will mark the run as CANCELLED and emit a task_cancelled event.
+      const runId = state.runId;
+      if (runId) {
+        api(`/api/agent/runs/${encodeURIComponent(runId)}/cancel`, { method: 'POST' })
+          .catch(err => addEvent('tool_failed', `cancel request failed: ${err.message}`));
+      }
+      if (state.events) { try { state.events.close(); } catch (_) {} state.events = null; }
+      setRunStatus('cancelled');
+      addEvent('task_cancelled', 'Run cancellation requested. Stopping LLM and tool calls.', { iteration: state.iteration });
+      setRunUiRunning(false);
+    }
+
+    function reloadDisplayFrame() {
+      if (state.noVncUrl && els.vncFrame.src) {
+        const u = new URL(els.vncFrame.src);
+        u.searchParams.set('_ts', String(Date.now()));
+        els.vncFrame.src = u.toString();
+      }
+    }
+
+    async function suspendSession() {
+      els.suspendBtn.disabled = true;
+      setRunStatus('running');
+      addEvent('tool_called', 'Suspending computer session…', { tool: 'suspend' });
+      try {
+        const session = await api(`/demo/api/computer/session/${encodeURIComponent(state.providerId)}/${encodeURIComponent(state.sessionId)}/suspend`, { method: 'POST' });
+        setSession(session);
+        setRunStatus('done');
+        addEvent('task_completed', 'Computer suspended.', { status: session.status });
+      } catch (error) {
+        addEvent('tool_failed', error.message);
+        setRunStatus('failed');
+      }
+    }
+
+    /* ---------------- Wire up ---------------- */
+    els.createBtn.addEventListener('click', createSession);
+    if (els.createFlyvmBtn) {
+      els.createFlyvmBtn.addEventListener('click', () => {
+        state.forcedProviderId = 'firecracker';
+        return createSession();
+      });
+    }
+    if (els.createComputerAgentBtn) {
+      els.createComputerAgentBtn.addEventListener('click', () => {
+        state.forcedProviderId = 'computer-agent';
+        return createSession();
+      });
+    }
+    if (els.createAndroidBtn) {
+      els.createAndroidBtn.addEventListener('click', () => {
+        state.forcedProviderId = 'android-agent';
+        return createSession();
+      });
+    }
+
+    /* ---------------- Benchmark task picker ---------------- */
+    if (els.suitePicker) {
+      const tasksById = new Map();
+      fetch('/agent-suite.json', { cache: 'no-store' })
+        .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
+        .then(suite => {
+          for (const group of (suite.groups || [])) {
+            const og = document.createElement('optgroup');
+            og.label = group.app;
+            for (const t of (group.tasks || [])) {
+              tasksById.set(t.id, t);
+              const opt = document.createElement('option');
+              opt.value = t.id;
+              opt.textContent = `${t.difficulty}. ${t.title} [${(t.caps || []).join('/')}]`;
+              og.appendChild(opt);
+            }
+            els.suitePicker.appendChild(og);
+          }
+        })
+        .catch(err => {
+          const opt = document.createElement('option');
+          opt.disabled = true;
+          opt.textContent = 'failed to load suite: ' + err.message;
+          els.suitePicker.appendChild(opt);
+        });
+      els.suitePicker.addEventListener('change', () => {
+        const t = tasksById.get(els.suitePicker.value);
+        if (t && t.prompt) {
+          els.prompt.value = t.prompt;
+          els.prompt.focus();
+        }
+      });
+    }
+    els.newSessionBtn.addEventListener('click', startFreshSession);
+
+    async function startFreshSession() {
+      els.newSessionBtn.disabled = true;
+      try {
+        if (state.providerId && state.sessionId) {
+          try {
+            await api(sessionPath('/suspend'), { method: 'POST' });
+          } catch (_) {}
+        }
+        if (state.runId) {
+          state.runId = '';
+          state.runStatus = '';
+        }
+        try { ArtifactSurface.clear(); } catch (_) {}
+        if (els.timeline) els.timeline.innerHTML = '';
+        state.events = [];
+        expireCurrentSession('Starting a fresh computer session.');
+        await createSession();
+      } catch (err) {
+        addEvent('tool_failed', `Could not start a fresh session: ${err.message || err}`);
+      } finally {
+        els.newSessionBtn.disabled = false;
+      }
+    }
+    els.runBtn.addEventListener('click', runTask);
+    els.cancelBtn.addEventListener('click', cancelTask);
+    els.screenshotBtn.addEventListener('click', reloadDisplayFrame);
+    els.suspendBtn.addEventListener('click', suspendSession);
+    els.openTabBtn.addEventListener('click', () => {
+      const viewerUrl = setNoVncUrlForControl(state.vncControl);
+      if (state.displayReady && viewerUrl) window.open(viewerUrl, '_blank', 'noopener');
+    });
+    els.vncControlBtn.addEventListener('click', () => setVncControl(!state.vncControl));
+    els.fileRefreshBtn.addEventListener('click', () => refreshFiles());
+    els.artifactRefreshBtn.addEventListener('click', () => ArtifactSurface.refresh());
+    els.artifactBrowserRefreshBtn.addEventListener('click', () => ArtifactSurface.refresh());
+    els.sessionRefreshBtn.addEventListener('click', refreshSessionList);
+    els.artifactDialogClose.addEventListener('click', ArtifactSurface.closeDialog);
+    els.artifactModal.addEventListener('mousedown', ev => {
+      if (ev.target === els.artifactModal) ArtifactSurface.closeDialog();
+    });
+    window.addEventListener('keydown', ev => {
+      if (ev.key === 'Escape' && !els.artifactModal.hidden) ArtifactSurface.closeDialog();
+    });
+    els.filePath.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') {
+        ev.preventDefault();
+        refreshFiles();
+      }
+    });
+    els.latestBtn.addEventListener('click', scrollToLatest);
+    els.clearBtn.addEventListener('click', () => { resetEvents(); setRunStatus('idle'); });
+    els.timeline.addEventListener('scroll', () => { setAutoScroll(isNearBottom()); }, { passive: true });
+    els.displayRetry.addEventListener('click', () => {
+      if (!state.providerId || !state.sessionId || !state.noVncUrl) return;
+      waitForDisplay({ providerId: state.providerId, sessionId: state.sessionId, status: 'RUNNING', noVncUrl: state.noVncUrl });
+    });
+    els.prompt.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter' && (ev.metaKey || ev.ctrlKey) && !els.runBtn.disabled) {
+        ev.preventDefault();
+        runTask();
+      }
+    });
+
+    // initial paint
+    showEmpty();
+    refreshSessionList().catch(() => {});
+    autoBootIfNeeded();
+  </script>
+</body>
+</html>

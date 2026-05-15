@@ -1,0 +1,56 @@
+services:
+  # OSWorld benchmark sandbox: real Ubuntu 22.04 VM (qcow2 disk image)
+  # booted by QEMU-in-Docker. THIS is what produces the desktop seen at
+  # http://localhost:8006 — same image, same apps, same look as the
+  # production OSWorld run.
+  #
+  # ONE-TIME SETUP — download the Ubuntu disk before first compose-up:
+  #   bash deployment/download-osworld-vm.sh
+  # (puts ~10 GB Ubuntu.qcow2 in ./deployment/vms/Ubuntu.qcow2)
+  #
+  # On Linux hosts with /dev/kvm available the VM boots in seconds.
+  # On macOS / Windows (no KVM) it falls back to QEMU TCG and boots in
+  # 1-3 min. Set KVM=N below if you hit a kvm-related error.
+  sandbox:
+    image: happysixd/osworld-docker:latest
+    container_name: nubian-sandbox
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    environment:
+      DISK_SIZE: "32G"
+      RAM_SIZE: "4G"
+      CPU_CORES: "4"
+      KVM: "N"           # set to "Y" on Linux hosts with /dev/kvm
+    volumes:
+      - ./deployment/vms/Ubuntu.qcow2:/System.qcow2:ro
+    ports:
+      - "8006:8006"      # noVNC web viewer -> http://localhost:8006
+      - "5000:5000"      # OSWorld server API (/screenshot, /setup/upload, ...)
+      - "9222:9222"      # Chrome devtools
+      - "8080:8080"      # VLC
+      - "5900:5900"      # raw VNC
+    devices: []          # uncomment "/dev/kvm" on Linux for KVM acceleration
+    restart: unless-stopped
+
+  # Application infra dependencies (required by the Spring Boot agent).
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: nubian-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  redis:
+    image: redis:latest
+    container_name: nubian-redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  rabbitmq_data:

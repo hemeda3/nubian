@@ -1,0 +1,44 @@
+[Unit]
+Description=Nubian Universal Ubuntu Desktop Computer Agent
+After=network-online.target graphical.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/.local/share/nubian-universal-computer-agent
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/run/user/1000/gdm/Xauthority
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+Environment=COMPUTER_AGENT_HOST=0.0.0.0
+Environment=COMPUTER_AGENT_PORT=6090
+Environment=PUBLIC_HOST=YOUR_HOST
+Environment=PUBLIC_AGENT_PORT=28006
+Environment=PUBLIC_AGENT_BASE_PATH=/agent
+Environment=PUBLIC_VNC_PORT=28006
+Environment=OSWORLD_API=http://127.0.0.1:5000
+Environment=COMPUTER_AGENT_DISPLAY_WIDTH=1024
+Environment=COMPUTER_AGENT_DISPLAY_HEIGHT=1024
+Environment=COMPUTER_AGENT_SCREENSHOT_CURSOR_RADIUS=6
+Environment=COMPUTER_AGENT_CLICK_HIGHLIGHT_SECONDS=3.0
+Environment=COMPUTER_AGENT_FAT_CLICK=false
+Environment=COMPUTER_AGENT_FAT_CLICK_RADIUS=10
+Environment=COMPUTER_AGENT_FAT_CLICK_DELAY=0.035
+Environment=COMPUTER_AGENT_POINTER_BRIDGE=true
+Environment=COMPUTER_AGENT_POINTER_BRIDGE_ANCHOR_PAUSE=0.08
+Environment=COMPUTER_AGENT_POINTER_BRIDGE_MOVE_DURATION=0.12
+Environment=COMPUTER_AGENT_POINTER_BRIDGE_MAX_AGE=30.0
+Environment=COMPUTER_AGENT_POINTER_BRIDGE_ROUTE=bottom_edge
+Environment=COMPUTER_AGENT_POINTER_BRIDGE_EDGE_Y=0
+Environment=COMPUTER_AGENT_ACTION_COORDINATES=framebuffer
+Environment=COMPUTER_AGENT_PYAUTOGUI_FRAMEBUFFER=true
+Environment=COMPUTER_AGENT_LOG_DIR=/logs
+Environment=COMPUTER_AGENT_EVENT_RETENTION_SEC=3600
+ExecStart=/usr/bin/python3 %h/.local/share/nubian-universal-computer-agent/computer_agent.py
+KillMode=process
+TimeoutStopSec=5
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target

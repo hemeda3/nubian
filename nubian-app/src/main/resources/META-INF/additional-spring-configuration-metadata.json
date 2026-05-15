@@ -1,0 +1,429 @@
+{
+  "groups": [
+    {
+      "name": "nubian.agent",
+      "type": "com.nubian.ai.autoconfigure.NubianAgentProperties",
+      "sourceType": "com.nubian.ai.autoconfigure.NubianAgentProperties"
+    },
+    {
+      "name": "nubian.sandbox",
+      "type": "com.nubian.ai.sandbox.config.SandboxProperties",
+      "sourceType": "com.nubian.ai.sandbox.config.SandboxProperties"
+    },
+    {
+      "name": "agent",
+      "type": "com.nubian.ai.agent.config.AgentConfig",
+      "sourceType": "com.nubian.ai.agent.config.AgentConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "nubian.agent.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable Nubian agent Spring Boot auto-configuration.",
+      "defaultValue": true
+    },
+    {
+      "name": "nubian.agent.runtime.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable runtime beans such as the default DBConnection and ToolRegistry when nubian-runtime is on the classpath.",
+      "defaultValue": true
+    },
+    {
+      "name": "nubian.agent.sandbox.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable sandbox core auto-configuration when nubian-sandbox is on the classpath.",
+      "defaultValue": true
+    },
+    {
+      "name": "nubian.agent.memory.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable memory services when nubian-memory is on the classpath.",
+      "defaultValue": true
+    },
+    {
+      "name": "nubian.agent.subagents.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable subagent task services when nubian-subagents is on the classpath.",
+      "defaultValue": true
+    },
+    {
+      "name": "nubian.agent.agent-runs.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable agent run controller, service, and built-in run tools when nubian-agent-runs is on the classpath.",
+      "defaultValue": true
+    },
+    {
+      "name": "nubian.agent.conversation.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable conversation services and REST endpoints when nubian-conversation is on the classpath.",
+      "defaultValue": true
+    },
+    {
+      "name": "nubian.agent.timeline.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable run timeline services and REST endpoints when nubian-timeline is on the classpath.",
+      "defaultValue": true
+    },
+    {
+      "name": "nubian.agent.sources.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable source and citation services when nubian-sources is on the classpath.",
+      "defaultValue": true
+    },
+    {
+      "name": "nubian.agent.artifacts.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable artifact storage services and REST endpoints when nubian-artifacts is on the classpath.",
+      "defaultValue": true
+    },
+    {
+      "name": "nubian.agent.collaboration.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable collaboration share and invite services when nubian-collaboration is on the classpath.",
+      "defaultValue": true
+    },
+    {
+      "name": "nubian.agent.billing.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable billing services and REST endpoints when nubian-billing is on the classpath.",
+      "defaultValue": true
+    },
+    {
+      "name": "nubian.agent.browser.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable browser automation services when nubian-browser is on the classpath.",
+      "defaultValue": true
+    },
+    {
+      "name": "nubian.agent.identity-security.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable identity and Spring Security beans when nubian-identity-security is on the classpath.",
+      "defaultValue": false
+    },
+    {
+      "name": "nubian.sandbox.provider",
+      "type": "java.lang.String",
+      "description": "Default sandbox provider id used by the sandbox registry when multiple providers are registered.",
+      "defaultValue": "local"
+    },
+    {
+      "name": "nubian.sandbox.tools.auto-register",
+      "type": "java.lang.Boolean",
+      "description": "Automatically register sandbox SPI beans with the sandbox registry.",
+      "defaultValue": true
+    },
+    {
+      "name": "nubian.sandbox.tools.auto-registration-enabled",
+      "type": "java.lang.Boolean",
+      "description": "Automatically register discovered sandbox capabilities with the Nubian runtime tool registry when the sandbox tool registrar is active.",
+      "defaultValue": true
+    },
+    {
+      "name": "nubian.sandbox.tools.invocation-timeout-seconds",
+      "type": "java.lang.Long",
+      "description": "Timeout in seconds for sandbox capability tool invocations.",
+      "defaultValue": 900
+    },
+    {
+      "name": "nubian.sandbox.local.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable the local development sandbox provider when nubian-sandbox-local is on the classpath.",
+      "defaultValue": true
+    },
+    {
+      "name": "nubian.sandbox.docker.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable the Docker CLI sandbox provider when nubian-sandbox-docker is on the classpath. Also enabled when nubian.sandbox.provider is docker or docker-cli.",
+      "defaultValue": false
+    },
+    {
+      "name": "nubian.sandbox.docker.binary",
+      "type": "java.lang.String",
+      "description": "Docker CLI binary name used by the Docker sandbox provider.",
+      "defaultValue": "docker"
+    },
+    {
+      "name": "nubian.sandbox.daytona.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable the Daytona sandbox provider bridge when nubian-sandbox-daytona is on the classpath. Also enabled when nubian.sandbox.provider is daytona.",
+      "defaultValue": false
+    },
+    {
+      "name": "nubian.sandbox.firecracker.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable the Firecracker sandbox provider when nubian-sandbox-firecracker is on the classpath. Also enabled when nubian.sandbox.provider is firecracker.",
+      "defaultValue": false
+    },
+    {
+      "name": "nubian.sandbox.firecracker.api-base-url",
+      "type": "java.lang.String",
+      "description": "FlyVM REST control-plane base URL used for /v1/computers lifecycle calls.",
+      "defaultValue": "https://api.flyvm.io"
+    },
+    {
+      "name": "nubian.sandbox.firecracker.direct-no-vnc-url",
+      "type": "java.lang.String",
+      "description": "Optional direct noVNC viewer URL used by the UI instead of the FlyVM REST noVNC proxy."
+    },
+    {
+      "name": "nubian.sandbox.firecracker.api-key",
+      "type": "java.lang.String",
+      "description": "FlyVM API key sent as X-Api-Key for REST lifecycle calls."
+    },
+    {
+      "name": "nubian.sandbox.firecracker.bearer-token",
+      "type": "java.lang.String",
+      "description": "FlyVM bearer token sent as Authorization for REST lifecycle calls. When set, this overrides dev JWT minting."
+    },
+    {
+      "name": "nubian.sandbox.firecracker.jwt-secret",
+      "type": "java.lang.String",
+      "description": "Development-only HS256 secret used to mint short-lived FlyVM bearer tokens when bearer-token is not set."
+    },
+    {
+      "name": "nubian.sandbox.firecracker.jwt-issuer",
+      "type": "java.lang.String",
+      "description": "Issuer claim used for development FlyVM JWT minting.",
+      "defaultValue": "flyvm-auth-service"
+    },
+    {
+      "name": "nubian.sandbox.firecracker.jwt-audience",
+      "type": "java.lang.String",
+      "description": "Audience claim used for development FlyVM JWT minting.",
+      "defaultValue": "flyvm-api"
+    },
+    {
+      "name": "nubian.sandbox.firecracker.jwt-tenant-id",
+      "type": "java.lang.String",
+      "description": "Tenant id used as the sub claim for development FlyVM JWT minting."
+    },
+    {
+      "name": "nubian.sandbox.firecracker.jwt-tier",
+      "type": "java.lang.String",
+      "description": "Tier claim used for development FlyVM JWT minting.",
+      "defaultValue": "enterprise"
+    },
+    {
+      "name": "nubian.sandbox.firecracker.jwt-query-limit",
+      "type": "java.lang.Long",
+      "description": "Query limit claim used for development FlyVM JWT minting.",
+      "defaultValue": 1000000
+    },
+    {
+      "name": "nubian.sandbox.firecracker.jwt-ttl",
+      "type": "java.time.Duration",
+      "description": "Time-to-live for development FlyVM JWTs minted by the adapter.",
+      "defaultValue": "1h"
+    },
+    {
+      "name": "nubian.sandbox.firecracker.region",
+      "type": "java.lang.String",
+      "description": "Optional FlyVM computer region sent to POST /v1/computers."
+    },
+    {
+      "name": "nubian.sandbox.firecracker.required-provider",
+      "type": "java.lang.String",
+      "description": "Optional required provider sent to POST /v1/computers."
+    },
+    {
+      "name": "nubian.sandbox.firecracker.memory-mib",
+      "type": "java.lang.Integer",
+      "description": "Default FlyVM computer memory allocation.",
+      "defaultValue": 1024
+    },
+    {
+      "name": "nubian.sandbox.firecracker.vcpu",
+      "type": "java.lang.Integer",
+      "description": "Default FlyVM computer vCPU allocation.",
+      "defaultValue": 1
+    },
+    {
+      "name": "nubian.sandbox.firecracker.data-disk-mib",
+      "type": "java.lang.Integer",
+      "description": "Default FlyVM computer data disk allocation.",
+      "defaultValue": 3072
+    },
+    {
+      "name": "nubian.sandbox.firecracker.repair-no-vnc-proxy",
+      "type": "java.lang.Boolean",
+      "description": "Run the compatibility in-guest noVNC repair command during session startup. Keep disabled when FlyVM public REST/WebSocket proxy is available.",
+      "defaultValue": false
+    },
+    {
+      "name": "nubian.sandbox.persistence.sqlite.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable SQLite-backed sandbox session and event persistence when the SQLite module is on the classpath.",
+      "defaultValue": false
+    },
+    {
+      "name": "nubian.sandbox.persistence.sqlite.path",
+      "type": "java.lang.String",
+      "description": "SQLite database file path for sandbox session and event persistence.",
+      "defaultValue": "${java.io.tmpdir}/nubian-sandbox.sqlite"
+    },
+    {
+      "name": "nubian.sandbox.security.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable sandbox security policy checks.",
+      "defaultValue": true
+    },
+    {
+      "name": "nubian.sandbox.security.allow-privileged-docker",
+      "type": "java.lang.Boolean",
+      "description": "Allow Docker sandbox sessions to request privileged containers.",
+      "defaultValue": false
+    },
+    {
+      "name": "nubian.sandbox.security.allowed-docker-images",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "Optional allowlist of Docker image references. Empty means any non-malformed image is allowed."
+    },
+    {
+      "name": "nubian.sandbox.security.denied-commands",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "Command prefixes denied by the default sandbox policy."
+    },
+    {
+      "name": "nubian.sandbox.security.denied-operations",
+      "type": "java.util.Set<com.nubian.ai.sandbox.policy.SandboxOperation>",
+      "description": "Sandbox operation types denied by the default sandbox policy."
+    },
+    {
+      "name": "nubian.sandbox.security.denied-path-prefixes",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "Path prefixes denied by the default sandbox policy."
+    },
+    {
+      "name": "nubian.sandbox.security.denied-environment-keys",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "Environment variable names denied by the default sandbox policy."
+    },
+    {
+      "name": "nubian.sandbox.security.allow-public-ports",
+      "type": "java.lang.Boolean",
+      "description": "Allow sandbox sessions to expose public ports.",
+      "defaultValue": true
+    },
+    {
+      "name": "nubian.sandbox.security.max-command-timeout-seconds",
+      "type": "java.lang.Long",
+      "description": "Maximum allowed command timeout in seconds. Zero means no policy cap.",
+      "defaultValue": 0
+    },
+    {
+      "name": "nubian.supabase.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable Supabase runtime clients. Disabled by default so local starter usage can run without Supabase credentials.",
+      "defaultValue": false
+    },
+    {
+      "name": "nubian.memory.state-pack.store",
+      "type": "java.lang.String",
+      "description": "State pack storage backend used by the memory module.",
+      "defaultValue": "memory"
+    },
+    {
+      "name": "nubian.memory.state-pack.table",
+      "type": "java.lang.String",
+      "description": "Database table used when nubian.memory.state-pack.store is db.",
+      "defaultValue": "agent_memory_state_packs"
+    },
+    {
+      "name": "nubian.memory.compaction.max-findings",
+      "type": "java.lang.Integer",
+      "description": "Maximum findings considered before memory compaction is recommended.",
+      "defaultValue": 80
+    },
+    {
+      "name": "nubian.artifacts.storage.path",
+      "type": "java.lang.String",
+      "description": "Local filesystem root used by artifact storage.",
+      "defaultValue": "${java.io.tmpdir}/nubian-artifacts"
+    },
+    {
+      "name": "nubian.artifacts.metadata.repository",
+      "type": "java.lang.String",
+      "description": "Artifact metadata repository backend.",
+      "defaultValue": "filesystem"
+    },
+    {
+      "name": "nubian.artifacts.metadata.table",
+      "type": "java.lang.String",
+      "description": "Database table used when nubian.artifacts.metadata.repository is db.",
+      "defaultValue": "artifacts"
+    },
+    {
+      "name": "agent.default-model",
+      "type": "java.lang.String",
+      "description": "Default model used by agent runs when a request omits a model.",
+      "defaultValue": "gpt-4o-mini"
+    },
+    {
+      "name": "agent.max-iterations",
+      "type": "java.lang.Integer",
+      "description": "Maximum number of iterations for an agent run.",
+      "defaultValue": 10
+    },
+    {
+      "name": "agent.timeout-seconds",
+      "type": "java.lang.Integer",
+      "description": "Timeout in seconds for agent runs.",
+      "defaultValue": 300
+    },
+    {
+      "name": "agent.tool.data.rapid-api-key",
+      "type": "java.lang.String",
+      "description": "RapidAPI key used by the built-in data provider tool."
+    }
+  ],
+  "hints": [
+    {
+      "name": "nubian.sandbox.provider",
+      "values": [
+        {
+          "value": "local",
+          "description": "Use the local development sandbox provider when available."
+        },
+        {
+          "value": "docker-cli",
+          "description": "Use the Docker CLI sandbox provider when available."
+        },
+        {
+          "value": "daytona",
+          "description": "Use the Daytona-backed sandbox provider when available."
+        },
+        {
+          "value": "firecracker",
+          "description": "Use the Firecracker sandbox provider when available."
+        }
+      ]
+    },
+    {
+      "name": "nubian.memory.state-pack.store",
+      "values": [
+        {
+          "value": "memory",
+          "description": "Use the process-local in-memory state pack store."
+        },
+        {
+          "value": "db",
+          "description": "Use the configured runtime DBConnection for state pack storage."
+        }
+      ]
+    },
+    {
+      "name": "nubian.artifacts.metadata.repository",
+      "values": [
+        {
+          "value": "filesystem",
+          "description": "Store artifact metadata beside local artifact content."
+        },
+        {
+          "value": "db",
+          "description": "Store artifact metadata through the runtime DBConnection."
+        }
+      ]
+    }
+  ]
+}

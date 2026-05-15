@@ -1,0 +1,81 @@
+{
+  "name": "Computer-use agent benchmark suite",
+  "version": 1,
+  "groups": [
+    {
+      "app": "LibreOffice Writer",
+      "tasks": [
+        { "id": "writer-1",  "difficulty": 1,  "caps": ["SEE"],                     "title": "List visible toolbar buttons",        "prompt": "Open LibreOffice Writer. Take a screenshot. List every visible toolbar button you can identify, with a one-line label for each." },
+        { "id": "writer-2",  "difficulty": 2,  "caps": ["TYPE","SAVE"],             "title": "Type and save",                       "prompt": "Open LibreOffice Writer, type 'Hello world', then File → Save As to /workspace/agent-demo/hello.odt." },
+        { "id": "writer-3",  "difficulty": 3,  "caps": ["CLICK","SELECT"],          "title": "Bold the first paragraph",            "prompt": "In LibreOffice Writer, select the first paragraph of the document and make it bold using the toolbar B button." },
+        { "id": "writer-4",  "difficulty": 4,  "caps": ["TAB","CLICK"],             "title": "Reach Format → Paragraph by keyboard", "prompt": "In LibreOffice Writer, navigate to the Format → Paragraph menu using only Tab/Shift+Tab and arrow keys (no mouse)." },
+        { "id": "writer-5",  "difficulty": 5,  "caps": ["SELECT","SEE"],            "title": "Triple-click select a sentence",      "prompt": "In LibreOffice Writer, triple-click anywhere in the document to select a sentence, then report the exact text that is selected." },
+        { "id": "writer-6",  "difficulty": 6,  "caps": ["TYPE","CLICK"],            "title": "Insert a 3×2 table and fill header",  "prompt": "In LibreOffice Writer, insert a 3-row by 2-column table via Table → Insert. Fill the first row with 'Name | Score'." },
+        { "id": "writer-7",  "difficulty": 7,  "caps": ["MULTI","TYPE"],            "title": "Cross-app paste from browser",        "prompt": "Open https://news.ycombinator.com in a browser, copy the title of the top story, switch to LibreOffice Writer, and paste it as a new line." },
+        { "id": "writer-8",  "difficulty": 8,  "caps": ["SAVE","VERIFY"],           "title": "Round-trip as .docx",                 "prompt": "In Writer, save the current document as /workspace/agent-demo/test.docx, close it, reopen it, and verify the text content survived." },
+        { "id": "writer-9",  "difficulty": 9,  "caps": ["CLICK","VERIFY"],          "title": "Insert a footnote",                   "prompt": "In Writer, place a footnote on the word 'Test' via Insert → Footnote. Verify a footnote marker appears at the bottom of the page." },
+        { "id": "writer-10", "difficulty": 10, "caps": ["MULTI","SAVE"],            "title": "Two-window paragraph copy",           "prompt": "Open two LibreOffice Writer windows. Copy a paragraph from window A into window B. Save window B as /workspace/agent-demo/two-windows.odt." }
+      ]
+    },
+    {
+      "app": "LibreOffice Calc",
+      "tasks": [
+        { "id": "calc-1",  "difficulty": 1,  "caps": ["SEE"],                       "title": "Identify column headers",             "prompt": "Open LibreOffice Calc. Take a screenshot. Report the labels of the three leftmost column headers." },
+        { "id": "calc-2",  "difficulty": 2,  "caps": ["SELECT","TYPE"],             "title": "Type into A1 and B1",                 "prompt": "In LibreOffice Calc, click cell A1, type 'Item', press Tab to move to B1, type 'Price'." },
+        { "id": "calc-3",  "difficulty": 3,  "caps": ["TAB"],                       "title": "Navigate A1 → D5 by keyboard",         "prompt": "In Calc, starting from A1, navigate to D5 using only Tab and Enter keys. Report the active cell at each step." },
+        { "id": "calc-4",  "difficulty": 4,  "caps": ["TYPE","VERIFY"],             "title": "Sum a range",                         "prompt": "In Calc, enter 10, 20, 30, 40 in B2:B5. In B6 enter =SUM(B2:B5). Verify B6 displays 100." },
+        { "id": "calc-5",  "difficulty": 5,  "caps": ["CLICK","SELECT"],            "title": "Bold the header row",                 "prompt": "In Calc, select row 1 and apply bold via the B toolbar button." },
+        { "id": "calc-6",  "difficulty": 6,  "caps": ["SELECT","CLICK"],            "title": "Format range as currency",            "prompt": "In Calc, select B2:B5 and format the cells as currency via Format → Cells → Currency." },
+        { "id": "calc-7",  "difficulty": 7,  "caps": ["MULTI","SELECT"],            "title": "Paste markdown table",                "prompt": "Paste a 5-row markdown table (provided in /workspace/agent-demo/table.md) into A1:B5 of LibreOffice Calc." },
+        { "id": "calc-8",  "difficulty": 8,  "caps": ["SAVE","VERIFY"],             "title": "Round-trip as .xlsx",                 "prompt": "Save the current spreadsheet as /workspace/agent-demo/demo.xlsx, close it, reopen, and confirm the SUM formula still computes." },
+        { "id": "calc-9",  "difficulty": 9,  "caps": ["CLICK","TYPE"],              "title": "Insert a chart",                      "prompt": "In Calc, select A1:B5 and insert a chart via Insert → Chart, accepting all defaults." },
+        { "id": "calc-10", "difficulty": 10, "caps": ["MULTI","VERIFY"],            "title": "Cross-app SUM verification",          "prompt": "Compute a SUM in Calc, copy the cell value, paste it into Writer, and verify both displays match." }
+      ]
+    },
+    {
+      "app": "LibreOffice Impress",
+      "tasks": [
+        { "id": "impress-1",  "difficulty": 1,  "caps": ["SEE"],                    "title": "Identify slide layout",                "prompt": "Open LibreOffice Impress. Take a screenshot. Identify the slide layout currently showing (e.g., 'Title, Content')." },
+        { "id": "impress-2",  "difficulty": 2,  "caps": ["CLICK"],                  "title": "Add a new slide",                     "prompt": "In Impress, click the '+ New Slide' button once. Verify the slide count increases to 2." },
+        { "id": "impress-3",  "difficulty": 3,  "caps": ["TYPE"],                   "title": "Add a slide title",                   "prompt": "In Impress, click the title placeholder on slide 1 and type 'Demo'." },
+        { "id": "impress-4",  "difficulty": 4,  "caps": ["SELECT","TYPE"],          "title": "Bullet body content",                 "prompt": "In Impress, click the body placeholder on slide 1 and type three bullet points: 'Point one', 'Point two', 'Point three'." },
+        { "id": "impress-5",  "difficulty": 5,  "caps": ["CLICK"],                  "title": "Change slide layout",                 "prompt": "In Impress, change the layout of slide 1 via the Layout panel to 'Title, Content, Content'." },
+        { "id": "impress-6",  "difficulty": 6,  "caps": ["TAB","CLICK"],            "title": "Add slide in outline view",           "prompt": "In Impress, switch to View → Outline. Use Tab/Enter to add a new slide titled 'Outline added'." },
+        { "id": "impress-7",  "difficulty": 7,  "caps": ["SAVE"],                   "title": "Save as .odp",                        "prompt": "Save the presentation as /workspace/agent-demo/demo.odp." },
+        { "id": "impress-8",  "difficulty": 8,  "caps": ["CLICK","VERIFY"],         "title": "Run slideshow",                       "prompt": "Start the slideshow with F5, advance one slide with Space, then exit with Esc. Verify return to edit view." },
+        { "id": "impress-9",  "difficulty": 9,  "caps": ["MULTI"],                  "title": "Insert image into slide",             "prompt": "In Impress, insert /workspace/agent-demo/screenshot.png into slide 2 via Insert → Image." },
+        { "id": "impress-10", "difficulty": 10, "caps": ["SAVE","VERIFY"],          "title": "Export as PDF and verify",             "prompt": "Export the current presentation as PDF to /workspace/agent-demo/demo.pdf. Verify the file exists and has non-zero size." }
+      ]
+    },
+    {
+      "app": "Image Editor",
+      "tasks": [
+        { "id": "image-editor-1",  "difficulty": 1,  "caps": ["SEE"],                       "title": "Identify editor panels",             "prompt": "Open the image editor. Take a screenshot. List the dockable panels visible on launch (Toolbox, Layers, Channels, etc.)." },
+        { "id": "image-editor-2",  "difficulty": 2,  "caps": ["CLICK"],                     "title": "Create a new canvas",                "prompt": "In the image editor, click File → New, accept defaults, and verify a blank canvas appears." },
+        { "id": "image-editor-3",  "difficulty": 3,  "caps": ["SELECT","CLICK"],            "title": "Select Bucket Fill tool",            "prompt": "In the image editor, pick the Bucket Fill tool from the toolbox by clicking its icon." },
+        { "id": "image-editor-4",  "difficulty": 4,  "caps": ["TYPE","CLICK"],              "title": "Add a text layer",                   "prompt": "In the image editor, add a text layer to the current image with the content 'Demo'." },
+        { "id": "image-editor-5",  "difficulty": 5,  "caps": ["CLICK","VERIFY"],            "title": "Resize canvas",                      "prompt": "In the image editor, resize the canvas to 1024×768 via Image → Canvas Size. Verify the new dimensions in the title bar." },
+        { "id": "image-editor-6",  "difficulty": 6,  "caps": ["MULTI"],                     "title": "Open an existing PNG",               "prompt": "In the image editor, open /workspace/agent-demo/screenshot.png and verify the image loads in a new window." },
+        { "id": "image-editor-7",  "difficulty": 7,  "caps": ["CLICK"],                     "title": "Apply Gaussian Blur",                "prompt": "In the image editor, apply Filters → Blur → Gaussian Blur with default radius to the active layer." },
+        { "id": "image-editor-8",  "difficulty": 8,  "caps": ["SELECT","SAVE"],             "title": "Crop and export PNG",                "prompt": "In the image editor, use rectangle-select to mark a region, crop to selection, and export as /workspace/agent-demo/cropped.png." },
+        { "id": "image-editor-9",  "difficulty": 9,  "caps": ["CLICK","SAVE"],              "title": "Flatten and save .xcf",              "prompt": "In the image editor, flatten the image via Image → Flatten, then save as /workspace/agent-demo/flat.xcf." },
+        { "id": "image-editor-10", "difficulty": 10, "caps": ["MULTI","VERIFY"],            "title": "PNG round-trip with blur",           "prompt": "In the image editor, open a PNG, apply Gaussian Blur, export back as PNG, and verify the new file size differs from the original." }
+      ]
+    },
+    {
+      "app": "Files & Browser",
+      "tasks": [
+        { "id": "files-1",  "difficulty": 1,  "caps": ["SEE"],                      "title": "List home folder entries",            "prompt": "Open the Files manager. Take a screenshot. List three folders visible in /home." },
+        { "id": "files-2",  "difficulty": 2,  "caps": ["CLICK"],                    "title": "Navigate into a folder",              "prompt": "In Files, double-click a folder. Verify the path bar updates to reflect the new directory." },
+        { "id": "files-3",  "difficulty": 3,  "caps": ["MULTI"],                    "title": "Create a text file",                  "prompt": "Create a new text file at /workspace/agent-demo/note.txt with the content 'hello'." },
+        { "id": "files-4",  "difficulty": 4,  "caps": ["SELECT","CLICK"],           "title": "Right-click Properties",              "prompt": "In Files, right-click any file and choose Properties. Report its file size in bytes." },
+        { "id": "files-5",  "difficulty": 5,  "caps": ["TYPE","SAVE"],              "title": "Open Hacker News in Firefox",         "prompt": "Launch Firefox, navigate to https://news.ycombinator.com, and verify the page renders." },
+        { "id": "files-6",  "difficulty": 6,  "caps": ["SEE"],                      "title": "Extract top 5 stories",               "prompt": "From the rendered Hacker News page, extract the titles and URLs of the top 5 stories." },
+        { "id": "files-7",  "difficulty": 7,  "caps": ["MULTI","SAVE"],             "title": "Save HN list as markdown",            "prompt": "Save the top 5 Hacker News stories as a markdown bulleted list at /workspace/agent-demo/hn.md." },
+        { "id": "files-8",  "difficulty": 8,  "caps": ["VERIFY"],                   "title": "Verify saved markdown",               "prompt": "Read /workspace/agent-demo/hn.md back and confirm it contains exactly 5 lines beginning with '- '." },
+        { "id": "files-9",  "difficulty": 9,  "caps": ["CLICK"],                    "title": "Open story, screenshot, close tab",   "prompt": "In Firefox, open the first story in a new tab, take a screenshot, and close the new tab." },
+        { "id": "files-10", "difficulty": 10, "caps": ["MULTI","VERIFY"],           "title": "Drag markdown into Writer",           "prompt": "Drag /workspace/agent-demo/hn.md into LibreOffice Writer, then verify the document content matches the markdown file." }
+      ]
+    }
+  ]
+}

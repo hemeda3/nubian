@@ -1,0 +1,19 @@
+[Unit]
+Description=Nubian X11 Window Tracker
+After=graphical-session.target nubian-universal-computer-agent.service
+
+[Service]
+Type=simple
+WorkingDirectory=%h/.local/share/nubian-universal-computer-agent
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/run/user/1000/gdm/Xauthority
+Environment=XDG_SESSION_TYPE=x11
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+Environment=WINDOW_TRACKER_LOG=/logs/windows.jsonl
+ExecStart=/usr/bin/python3 %h/.local/share/nubian-universal-computer-agent/window_tracker_x11.py
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target

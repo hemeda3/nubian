@@ -1,0 +1,23 @@
+[Unit]
+Description=Nubian Desktop Event DuckDB Indexer
+After=nubian-x11-window-tracker.service nubian-xinput-tracker.service nubian-atspi-tracker.service
+
+[Service]
+Type=simple
+WorkingDirectory=%h/.local/share/nubian-universal-computer-agent
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/run/user/1000/gdm/Xauthority
+Environment=XDG_SESSION_TYPE=x11
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+Environment=COMPUTER_AGENT_LOG_DIR=/logs
+Environment=EVENT_INDEX_DB=/logs/events.duckdb
+Environment=EVENT_INDEX_STATE=/logs/event-indexer-state.json
+Environment=EVENT_SESSION_ID_FILE=/logs/session-id
+Environment=EVENT_INDEX_RETENTION_SEC=3600
+ExecStart=/usr/bin/python3 %h/.local/share/nubian-universal-computer-agent/event_indexer.py
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target

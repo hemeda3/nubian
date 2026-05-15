@@ -1,0 +1,22 @@
+package com.nubian.ai.sandbox.policy;
+
+public enum SandboxOperation {
+    CREATE_SESSION,
+    START_SESSION,
+    STOP_SESSION,
+    DELETE_SESSION,
+    EXECUTE_COMMAND,
+    INTERRUPT_COMMAND,
+    READ_FILE,
+    WRITE_FILE,
+    LIST_FILES,
+    CREATE_DIRECTORY,
+    DELETE_PATH,
+    EXPOSE_PORT,
+    LIST_PORTS,
+    CLOSE_PORT,
+    CAPTURE_DISPLAY,
+    BROWSER_ACTION,
+    ARTIFACT_OPERATION,
+    INSPECT_COMPUTER
+}

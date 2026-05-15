@@ -1,0 +1,20 @@
+[Unit]
+Description=Nubian XInput2 Mouse Keyboard Tracker
+After=graphical-session.target nubian-universal-computer-agent.service
+
+[Service]
+Type=simple
+WorkingDirectory=%h/.local/share/nubian-universal-computer-agent
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/run/user/1000/gdm/Xauthority
+Environment=XDG_SESSION_TYPE=x11
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+Environment=XINPUT_TRACKER_LOG=/logs/input-events.jsonl
+Environment=COMPUTER_AGENT_EVENT_RETENTION_SEC=3600
+ExecStart=/usr/bin/python3 %h/.local/share/nubian-universal-computer-agent/xinput_tracker.py
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target

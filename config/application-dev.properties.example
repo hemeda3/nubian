@@ -1,0 +1,57 @@
+# Local dev configuration template for the Nubian agent.
+# Copy this file to `application-dev.properties` and fill in your own values.
+# The real properties file is gitignored.
+
+# ---- LLM providers (pick one or both) ----
+# OpenRouter — works for Gemini / Claude / OpenAI / open-source models.
+OPENROUTER_API_KEY=
+OPENROUTER_MODEL=google/gemini-3.1-pro-preview
+
+# Direct Gemini API (faster, cheaper than OpenRouter for Gemini models).
+GEMINI_API_KEY=
+
+# Optional direct providers.
+OPENAI_API_KEY=
+ANTHROPIC_API_KEY=
+
+# ---- Sandbox (where the agent's keyboard/mouse actions land) ----
+# Default points at localhost — run the controller container locally OR
+# point these at your own remote VM. See docs/sandbox-tool-architecture.md.
+NUBIAN_SANDBOX_PROVIDER=docker
+nubian.sandbox.base-url=${NUBIAN_SANDBOX_BASE_URL:http://localhost:28006/agent}
+
+# ---- Grounder (UI-TARS or compatible vLLM) ----
+# Pixel grounding model. Disable if you only want screenshot-only planning.
+nubian.uground.enabled=${NUBIAN_UGROUND_ENABLED:false}
+nubian.uground.base-url=${NUBIAN_UGROUND_BASE_URL:http://localhost:20228/v1}
+nubian.uground.model=${NUBIAN_UGROUND_MODEL:ByteDance-Seed/UI-TARS-1.5-7B}
+nubian.uground.backend=uitars15
+nubian.uground.coordinate-space=native
+
+# ---- Agent flow ----
+# `seeact` is the only supported flow at the moment.
+nubian.agent.flow=${NUBIAN_AGENT_FLOW:seeact}
+
+# Per-role model selection. Default everything to Gemini Pro Preview.
+# Supervisor stays on the strongest model because angry-mode escalations
+# benefit most from it.
+nubian.llm.base-url=${NUBIAN_LLM_BASE_URL:https://openrouter.ai/api/v1}
+nubian.llm.api-key=${NUBIAN_LLM_API_KEY:${OPENROUTER_API_KEY}}
+nubian.llm.text-model=${NUBIAN_LLM_TEXT_MODEL:google/gemini-3.1-pro-preview}
+nubian.llm.vision-model=${NUBIAN_LLM_VISION_MODEL:google/gemini-3.1-pro-preview}
+nubian.agent.seeact.model=${NUBIAN_SEEACT_MODEL:google/gemini-3.1-pro-preview}
+nubian.agent.checkpoint-verifier-model=gemini-3.1-pro-preview
+nubian.agent.supervisor.enabled=${NUBIAN_AGENT_SUPERVISOR_ENABLED:true}
+nubian.agent.supervisor.model=${NUBIAN_AGENT_SUPERVISOR_MODEL:gemini-3.1-pro-preview}
+nubian.agent.supervisor.interval=${NUBIAN_AGENT_SUPERVISOR_INTERVAL:10}
+
+# ---- Agent budgets ----
+NUBIAN_AGENT_MAX_STEPS=400
+NUBIAN_AGENT_LOOP_MAX_ITERATIONS=240
+nubian.agent.observation-settle-ms=600
+nubian.tools.click.hold-ms=50
+nubian.tools.click.hover-delay-ms=0
+nubian.tools.click.post-delay-ms=0
+
+# ---- Best-of-N planner sampling (off by default; costs scale with N) ----
+nubian.agent.best-of-n=${NUBIAN_AGENT_BEST_OF_N:1}

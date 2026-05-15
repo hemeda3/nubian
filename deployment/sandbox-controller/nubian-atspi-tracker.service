@@ -1,0 +1,22 @@
+[Unit]
+Description=Nubian AT-SPI Accessibility Tracker
+After=graphical-session.target nubian-universal-computer-agent.service
+
+[Service]
+Type=simple
+WorkingDirectory=%h/.local/share/nubian-universal-computer-agent
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/run/user/1000/gdm/Xauthority
+Environment=XDG_SESSION_TYPE=x11
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+Environment=NO_AT_BRIDGE=0
+Environment=ATSPI_TRACKER_LOG=/logs/atspi-events.jsonl
+Environment=COMPUTER_AGENT_EVENT_RETENTION_SEC=3600
+Environment=ATSPI_TEXT_POLL_INTERVAL_SEC=0.5
+ExecStart=/usr/bin/python3 %h/.local/share/nubian-universal-computer-agent/atspi_tracker.py
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target

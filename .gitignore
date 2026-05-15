@@ -1,0 +1,61 @@
+# Real local config (secrets) — never commit. Template lives at *.example
+/config/application-*.properties
+!/config/application-*.properties.example
+
+# Maven build artifacts
+target/
+*.class
+*.jar
+*.war
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.project
+.classpath
+.settings/
+*.swp
+*.swo
+
+# Local AI assistant state (NEVER commit — contains full conversation logs)
+.omc/
+.claude/
+.cursor/
+.aider*
+agent-replay-*.jsonl
+**/checkpoints/checkpoint-*.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python (for scripts/, omniparser-server/)
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+
+# Logs / temp
+*.log
+/logs/
+/tmp/
+debug-*.log
+qodana.report/
+
+# Spring Boot devtools
+*.original
+
+# Test scratch
+/test-folders/
+/test-prompts/
+
+# OSWorld VM disk (23 GB, fetched by deployment/download-osworld-vm.sh — DO NOT COMMIT)
+deployment/vms/
+*.qcow2
+*.qcow2.zip

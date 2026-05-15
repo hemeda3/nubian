@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="-apple-system, system-ui, sans-serif">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0f172a"/>
+    </marker>
+    <marker id="ar-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8"/>
+    </marker>
+    <marker id="ar-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <style>
+      .title { font-size:20px; font-weight:800; fill:#0f172a; }
+      .sub { font-size:12px; fill:#475569; }
+      .container { fill:#f8fafc; stroke:#0f172a; stroke-width:1.5; }
+      .label { font-size:11px; font-weight:700; fill:#64748b; letter-spacing:1.5px; }
+      .box { fill:#ffffff; stroke:#0f172a; stroke-width:1.4; }
+      .box-purple { fill:#f5f3ff; stroke:#7c3aed; stroke-width:1.4; }
+      .box-blue { fill:#eff6ff; stroke:#1d4ed8; stroke-width:1.4; }
+      .box-red { fill:#fef2f2; stroke:#dc2626; stroke-width:1.4; }
+      .name { font-size:14px; font-weight:700; fill:#0f172a; }
+      .name-b { font-size:14px; font-weight:700; fill:#1d4ed8; }
+      .name-p { font-size:14px; font-weight:700; fill:#7c3aed; }
+      .name-r { font-size:14px; font-weight:700; fill:#dc2626; }
+      .small { font-size:11px; fill:#334155; }
+      .mono { font-family:ui-monospace, "SF Mono", Menlo, monospace; font-size:10.5px; fill:#334155; }
+      .L { stroke:#0f172a; stroke-width:1.4; fill:none; }
+      .Lb { stroke:#1d4ed8; stroke-width:1.4; fill:none; }
+      .Lr { stroke:#dc2626; stroke-width:1.4; fill:none; stroke-dasharray:5 3; }
+      .step { font-size:11px; font-weight:800; fill:#0f172a; }
+      .step-b { font-size:11px; font-weight:800; fill:#1d4ed8; }
+      .step-r { font-size:11px; font-weight:800; fill:#dc2626; }
+    </style>
+  </defs>
+
+  <text x="30" y="36" class="title">Nubian — Architecture</text>
+  <text x="30" y="56" class="sub">Java/Spring agent · vision-LLM planner · pixel grounder · QEMU-in-Docker sandbox</text>
+
+  <!-- AGENT -->
+  <rect x="30" y="90" width="430" height="520" rx="8" class="container"/>
+  <text x="48" y="112" class="label">AGENT · JAVA 17 + SPRING BOOT</text>
+
+  <rect x="50" y="125" width="390" height="60" rx="6" class="box"/>
+  <text x="65" y="146" class="name">Agent.java — main loop</text>
+  <text x="65" y="162" class="small">flow=seeact · max-steps=400 · settle 600ms</text>
+  <text x="65" y="178" class="small">capture · plan · ground · dispatch · verify · supervise</text>
+
+  <rect x="50" y="200" width="185" height="100" rx="6" class="box-purple"/>
+  <text x="65" y="221" class="name-p">SeeActPlanner</text>
+  <text x="65" y="238" class="small">role = PLANNER</text>
+  <text x="65" y="254" class="small">screenshot + plan</text>
+  <text x="65" y="270" class="small">→ {action, target}</text>
+  <text x="65" y="288" class="mono">gemini-3.1-pro</text>
+
+  <rect x="255" y="200" width="185" height="100" rx="6" class="box-red"/>
+  <text x="270" y="221" class="name-r">SupervisorAdvisor</text>
+  <text x="270" y="238" class="small">every 10 turns or on</text>
+  <text x="270" y="254" class="small">doom-loop signal</text>
+  <text x="270" y="270" class="small">CONTINUE · MODIFY</text>
+  <text x="270" y="286" class="small">ADVANCE · EXECUTE</text>
+
+  <rect x="50" y="315" width="185" height="80" rx="6" class="box-purple"/>
+  <text x="65" y="336" class="name-p">Verifier</text>
+  <text x="65" y="353" class="small">role = VERIFIER</text>
+  <text x="65" y="369" class="small">"did the step succeed?"</text>
+  <text x="65" y="385" class="small">drives ADVANCE on pass</text>
+
+  <rect x="255" y="315" width="185" height="80" rx="6" class="box"/>
+  <text x="270" y="336" class="name">Tools.invoke</text>
+  <text x="270" y="353" class="small">click · type_text</text>
+  <text x="270" y="369" class="small">hotkey · scroll</text>
+  <text x="270" y="385" class="small">activate/close_window</text>
+
+  <rect x="50" y="410" width="390" height="80" rx="6" class="box-blue"/>
+  <text x="65" y="431" class="name-b">UGroundClient</text>
+  <text x="65" y="448" class="small">target description → (x, y)</text>
+  <text x="65" y="464" class="mono">backend=uitars15 · coord-space=native</text>
+  <text x="65" y="480" class="small">Best-of-N optional · two-brain rescue for tiny targets</text>
+
+  <rect x="50" y="505" width="390" height="95" rx="6" class="box-red"/>
+  <text x="65" y="526" class="name-r">Doom-loop detectors</text>
+  <text x="65" y="546" class="small">scroll_loop_detected — 4 nav-only in a row</text>
+  <text x="65" y="562" class="small">repeated_action_detected — same hash ≥ 2× in 5</text>
+  <text x="65" y="580" class="small">fires supervisor in angry bird mode (vision on)</text>
+  <text x="65" y="596" class="small">verdicts can rewrite plan or grab keyboard for ≤ 6 acts</text>
+
+  <!-- LLM provider -->
+  <rect x="500" y="90" width="320" height="160" rx="8" class="box-purple"/>
+  <text x="518" y="113" class="label" fill="#7c3aed">LLM PROVIDER</text>
+  <text x="518" y="138" class="name-p">gemini-3.1-pro-preview</text>
+  <text x="518" y="158" class="small">three roles, same model, different prompts</text>
+  <text x="518" y="180" class="small">Planner — picks the next action</text>
+  <text x="518" y="198" class="small">Verifier — confirms acceptance</text>
+  <text x="518" y="216" class="small">Supervisor — angry bird mode adds vision</text>
+  <text x="518" y="236" class="mono">also: OpenRouter · self-hosted vLLM</text>
+
+  <!-- Grounder -->
+  <rect x="500" y="270" width="320" height="140" rx="8" class="box-blue"/>
+  <text x="518" y="293" class="label" fill="#1d4ed8">GROUNDER</text>
+  <text x="518" y="318" class="name-b">UI-TARS-1.5-7B (vLLM)</text>
+  <text x="518" y="338" class="small">runs on any GPU VM</text>
+  <text x="518" y="356" class="mono">POST /v1/chat/completions</text>
+  <text x="518" y="374" class="small">image + "Locate X, output bbox"</text>
+  <text x="518" y="390" class="small">native px @ 1024² · ~1 s/cell warm</text>
+
+  <!-- Sandbox -->
+  <rect x="500" y="430" width="670" height="180" rx="8" class="container"/>
+  <text x="518" y="453" class="label">SANDBOX · happysixd/osworld-docker</text>
+
+  <rect x="518" y="465" width="200" height="135" rx="6" class="box"/>
+  <text x="533" y="486" class="name">Container</text>
+  <text x="533" y="503" class="mono">:8006  noVNC</text>
+  <text x="533" y="519" class="mono">:5000  OSWorld API</text>
+  <text x="533" y="535" class="mono">:9222  Chrome devtools</text>
+  <text x="533" y="551" class="mono">:5900  raw VNC</text>
+  <text x="533" y="571" class="small">nginx reverse-proxy</text>
+  <text x="533" y="587" class="mono">/agent/* → :6090</text>
+
+  <rect x="738" y="465" width="420" height="135" rx="6" class="box"/>
+  <text x="753" y="486" class="name">Guest VM · Ubuntu 22.04</text>
+  <text x="753" y="503" class="small">QEMU-in-Docker · KVM=Y on Linux x86 · TCG fallback</text>
+  <text x="753" y="523" class="name-b">Python controller (Flask) :6090</text>
+  <text x="753" y="540" class="mono">/eyes/screenshot · /hands/action · /memory/*</text>
+  <text x="753" y="557" class="small">drives X11 1024² desktop via pyautogui</text>
+  <text x="753" y="577" class="small">trackers: window_x11 · atspi · xinput · event_indexer</text>
+  <text x="753" y="595" class="small">apps: Chrome · LibreOffice · Files · Terminal · GIMP target</text>
+
+  <!-- User -->
+  <rect x="850" y="90" width="320" height="80" rx="8" class="box"/>
+  <text x="868" y="113" class="label">USER</text>
+  <text x="868" y="138" class="name">Operator / Web UI</text>
+  <text x="868" y="156" class="small">task in · noVNC + trace out</text>
+
+  <!-- Arrows: per-turn flow numbered -->
+  <!-- 1: agent → sandbox screenshot -->
+  <path d="M 440 460 L 470 460 L 470 510 L 515 510" class="Lb" marker-end="url(#ar-b)"/>
+  <text x="448" y="455" class="step-b">1 GET /eyes/screenshot</text>
+
+  <!-- 2: agent → LLM planner -->
+  <path d="M 230 245 L 470 200 L 495 165" class="L" marker-end="url(#ar)"/>
+  <text x="290" y="200" class="step">2 plan call</text>
+
+  <!-- 3: LLM → agent -->
+  <path d="M 495 185 L 460 220 L 230 270" class="L" marker-end="url(#ar)"/>
+  <text x="290" y="260" class="step">3 {action, target}</text>
+
+  <!-- 4: agent → grounder -->
+  <path d="M 440 445 L 470 340 L 495 340" class="Lb" marker-end="url(#ar-b)"/>
+  <text x="448" y="400" class="step-b">4 ground description</text>
+
+  <!-- 5: grounder → agent -->
+  <path d="M 495 360 L 470 390 L 440 460" class="Lb" marker-end="url(#ar-b)"/>
+  <text x="448" y="420" class="step-b">5 (x, y)</text>
+
+  <!-- 6: agent → sandbox action -->
+  <path d="M 440 355 L 480 355 L 480 530 L 515 530" class="Lb" marker-end="url(#ar-b)"/>
+  <text x="448" y="345" class="step-b">6 POST /hands/action</text>
+
+  <!-- 7: doom-loop → supervisor -->
+  <path d="M 345 505 L 345 305" class="Lr" marker-end="url(#ar-r)"/>
+  <text x="285" y="395" class="step-r" transform="rotate(-90 285 395)">on doom-loop</text>
+
+  <!-- 8: supervisor → LLM -->
+  <path d="M 440 235 L 495 215" class="Lr" marker-end="url(#ar-r)"/>
+  <text x="440" y="225" class="step-r">7 supervisor consult</text>
+
+  <!-- user input -->
+  <path d="M 1010 170 L 1010 200 L 460 200 L 240 200" class="L" marker-end="url(#ar)"/>
+  <text x="700" y="195" class="step">0 task</text>
+
+  <!-- legend -->
+  <rect x="500" y="630" width="670" height="110" rx="6" class="container"/>
+  <text x="518" y="650" class="label">LEGEND</text>
+  <line x1="518" y1="668" x2="558" y2="668" class="L" marker-end="url(#ar)"/>
+  <text x="566" y="672" class="small">LLM control plane (planner / verifier / supervisor)</text>
+  <line x1="518" y1="688" x2="558" y2="688" class="Lb" marker-end="url(#ar-b)"/>
+  <text x="566" y="692" class="small">Sandbox data plane (screenshots, actions, evidence)</text>
+  <line x1="518" y1="708" x2="558" y2="708" class="Lr" marker-end="url(#ar-r)"/>
+  <text x="566" y="712" class="small">Recovery path — doom-loop fires supervisor in angry bird mode</text>
+</svg>

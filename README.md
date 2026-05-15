@@ -15,7 +15,7 @@ Most agents read the page. Nubian watches the screen. It skips a11y, CDP, and Co
 
 Architecture at a glance:
 
-<img width="1728" height="992" alt="Nubian Agent — architecture" src="https://github.com/user-attachments/assets/4b161f3c-ee7f-4ca7-ae29-cfc9d4cdb64c" />
+<img src="docs/architecture.svg" width="100%" alt="Nubian Agent — architecture" />
 
 Full breakdown: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 

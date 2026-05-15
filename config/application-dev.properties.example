@@ -16,8 +16,16 @@ ANTHROPIC_API_KEY=
 
 # ---- Sandbox (where the agent's keyboard/mouse actions land) ----
 # Default points at localhost — run the controller container locally OR
-# point these at your own remote VM. See docs/sandbox-tool-architecture.md.
-NUBIAN_SANDBOX_PROVIDER=docker
+# point these at your own remote Ubuntu desktop running the Nubian controller.
+NUBIAN_SANDBOX_PROVIDER=computer-agent
+
+# computer-agent provider — where the Nubian guest agent is running.
+# Defaults are localhost:6090 — change these if your controller is on a remote VM.
+nubian.sandbox.computer-agent.host=${NUBIAN_SANDBOX_COMPUTER_AGENT_HOST:localhost}
+nubian.sandbox.computer-agent.agent-port=${NUBIAN_SANDBOX_COMPUTER_AGENT_AGENT_PORT:6090}
+nubian.sandbox.computer-agent.base-path=${NUBIAN_SANDBOX_COMPUTER_AGENT_BASE_PATH:/agent}
+
+# Optional legacy override — set this if your sandbox isn't a computer-agent.
 nubian.sandbox.base-url=${NUBIAN_SANDBOX_BASE_URL:http://localhost:28006/agent}
 
 # ---- Grounder (UI-TARS or compatible vLLM) ----

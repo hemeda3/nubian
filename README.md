@@ -58,8 +58,13 @@ mvn -o package -DskipTests
 cp config/application-dev.properties.example config/application-dev.properties
 $EDITOR config/application-dev.properties   # set GEMINI_API_KEY or OPENROUTER_API_KEY
 
-# 3. Bring up the sandbox
+# 3. Bring up the sandbox (Ubuntu desktop + Nubian controller on port 6090)
+#    Either run locally:
 docker compose up -d sandbox
+#    Or point the agent at a remote desktop in config/application-dev.properties:
+#      nubian.sandbox.computer-agent.host=<remote-ip>
+#      nubian.sandbox.computer-agent.agent-port=<port>     # default 6090
+#      nubian.sandbox.computer-agent.base-path=/agent      # if behind nginx
 
 # 4. Deploy the UI-TARS grounder on a GPU VM (required for grounded clicks)
 #    See deployment/GROUNDER_DEPLOY.md.

@@ -13,10 +13,6 @@ Most agents read the page. Nubian watches the screen. It skips a11y, CDP, and Co
 
 *Above: Nubian finishing a real online job application end to end. Left pane is the live reasoning trace; right pane is the agent's Ubuntu desktop. Along the way it wrote the cover letter in LibreOffice Writer, downloaded the required files, filled the form fields, and reached the "successfully applied" confirmation.*
 
-Architecture at a glance:
-
-<img src="docs/architecture.svg" width="100%" alt="Nubian Agent — architecture" />
-
 Full breakdown: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 
 ---
@@ -154,7 +150,8 @@ nubian.agent.best-of-n=1                       # >1 samples N candidates per tur
 
 
 
-![alt text](<docs/architecture-detailed copy.svg>)
+<img src="docs/architecture.svg" width="100%" alt="Nubian Agent — architecture" />
+
 ---
 
 ## License

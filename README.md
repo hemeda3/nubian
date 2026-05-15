@@ -5,9 +5,9 @@
 
 Most agents read the page. Nubian watches the screen. It skips a11y, CDP, and CodeAct, and uses vision and a virtual keyboard instead. The same channel a person uses. Today it drives LibreOffice Calc, Writer, Chrome, terminals, and the file manager. The target is to do the same in GIMP, Photoshop, and Blender, where no DOM or accessibility tree exists.
 
-https://github.com/user-attachments/assets/8aff5544-69db-4354-b133-8c14052be350
+[<img width="1280" height="702" alt="Nubian — job application demo (click to play)" src="https://github.com/user-attachments/assets/614d23e5-3d14-4cf2-9f14-5cdb9e2576b7" />](https://github.com/user-attachments/assets/8aff5544-69db-4354-b133-8c14052be350)
 
-https://github.com/user-attachments/assets/d446d710-7ce6-4ec6-976b-ad0c52d56b92
+[<img width="720" height="720" alt="Nubian — GIMP cat vectorize demo (click to play)" src="https://github.com/user-attachments/assets/5a78fbda-896c-45fb-b357-00bc9361be9d" />](https://github.com/user-attachments/assets/d446d710-7ce6-4ec6-976b-ad0c52d56b92)
 
 <img width="1536" height="1024" alt="Nubian completing a job application end to end" src="https://github.com/user-attachments/assets/317ee717-eaef-46e6-8b4c-c57d19d65f72" />
 

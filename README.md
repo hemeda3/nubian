@@ -46,16 +46,6 @@ Full breakdown: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
         └──────────────────────────────┘
 ```
 
-Three LLM roles:
-- **Planner** (`gemini-3.1-pro-preview`) — picks the next action from the
-  screenshot and current checklist state.
-- **Verifier** (same model) — confirms each acceptance state.
-- **Supervisor** (same model) — fires every 10 turns OR on detected doom-loops
-  (scroll-only streak ≥ 4, or repeated action signature). In angry mode the
-  screenshot rides along so the supervisor sees ground truth. It can rewrite
-  the active step text (MODIFY), mark it done (ADVANCE), or take over the
-  keyboard for up to 6 actions (EXECUTE).
-
 ---
 
 ## Quick start
@@ -96,24 +86,6 @@ Most-used:
 | `close_window` | `{name}` | window manager close (more reliable than clicking the X) |
 | `write_file` | `{path, content}` | absolute path in sandbox FS |
 | `wait` | `{ms}` | |
-
-Sign-based scroll inference (`dy<0 → up`) was the source of a long doom-loop
-in v1: the planner inconsistently emitted negative `dy` intending either
-direction. v2 forces explicit `direction`.
-
----
-
-## Loop-detection signals
-
-These trigger the supervisor in **angry mode** but never leak as advisory
-text to the planner (text hints were ignored in v1):
-
-- `scroll_loop_detected` — 4 consecutive navigation-only actions
-- `repeated_action_detected` — same non-navigation routeHash seen ≥ 2× in
-  last 5 turns
-
-On either signal the supervisor consult fires immediately (not waiting for
-the next mod-10 turn) and receives the current screenshot.
 
 ---
 

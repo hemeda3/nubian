@@ -3177,7 +3177,9 @@
     async function autoBootIfNeeded() {
       const attached = await attachExistingSession();
       if (attached) return;
-      // No explicit URL session — boot a fresh computer.
+      // Only auto-boot when the URL explicitly asks for a provider —
+      // otherwise show the Start buttons so the operator picks.
+      if (!requestedProviderId()) return;
       await createSession();
     }
 

@@ -69,7 +69,7 @@ public class ComputerTool extends Tool {
             "computer_list_ports");
 
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(120);
-    private static final String DEFAULT_WORKDIR = "/workspace";
+    private static final String DEFAULT_WORKDIR = "/tmp";
 
     private final SandboxRegistry registry;
     private final Duration invocationTimeout;
@@ -109,7 +109,7 @@ public class ComputerTool extends Tool {
           "sessionId": {"type": "string"},
           "command": {"type": "string", "description": "Shell command or executable to run."},
           "arguments": {"type": "array", "items": {"type": "string"}},
-          "workingDirectory": {"type": "string", "default": "/workspace"},
+          "workingDirectory": {"type": "string", "default": "/tmp"},
           "environment": {"type": "object", "additionalProperties": {"type": "string"}},
           "timeoutSeconds": {"type": "integer", "default": 120}
         },
@@ -141,7 +141,7 @@ public class ComputerTool extends Tool {
           "code": {"type": "string", "description": "Inline Python code for python3 -c."},
           "path": {"type": "string", "description": "Python script path inside the sandbox."},
           "arguments": {"type": "array", "items": {"type": "string"}},
-          "workingDirectory": {"type": "string", "default": "/workspace"},
+          "workingDirectory": {"type": "string", "default": "/tmp"},
           "timeoutSeconds": {"type": "integer", "default": 120}
         },
         "required": ["sessionId"]
@@ -186,7 +186,7 @@ public class ComputerTool extends Tool {
           "code": {"type": "string", "description": "Inline JavaScript for node -e."},
           "path": {"type": "string", "description": "Node script path inside the sandbox."},
           "arguments": {"type": "array", "items": {"type": "string"}},
-          "workingDirectory": {"type": "string", "default": "/workspace"},
+          "workingDirectory": {"type": "string", "default": "/tmp"},
           "timeoutSeconds": {"type": "integer", "default": 120}
         },
         "required": ["sessionId"]
@@ -231,7 +231,7 @@ public class ComputerTool extends Tool {
           "code": {"type": "string", "description": "Inline Go source code."},
           "path": {"type": "string", "description": "Go file/package path inside the sandbox."},
           "arguments": {"type": "array", "items": {"type": "string"}},
-          "workingDirectory": {"type": "string", "default": "/workspace"},
+          "workingDirectory": {"type": "string", "default": "/tmp"},
           "timeoutSeconds": {"type": "integer", "default": 120}
         },
         "required": ["sessionId"]
@@ -278,7 +278,7 @@ public class ComputerTool extends Tool {
           "providerId": {"type": "string"},
           "sessionId": {"type": "string"},
           "arguments": {"type": "array", "items": {"type": "string"}, "description": "Git arguments, for example [\\"clone\\", \\"https://github.com/org/repo.git\\"]"},
-          "workingDirectory": {"type": "string", "default": "/workspace"},
+          "workingDirectory": {"type": "string", "default": "/tmp"},
           "timeoutSeconds": {"type": "integer", "default": 120}
         },
         "required": ["sessionId", "arguments"]
@@ -620,7 +620,7 @@ public class ComputerTool extends Tool {
           "outputPath": {"type": "string", "description": "Output file path inside the sandbox."},
           "exportType": {"type": "string", "description": "Optional export type such as png, pdf, svg."},
           "arguments": {"type": "array", "items": {"type": "string"}, "description": "Raw or extra Inkscape arguments."},
-          "workingDirectory": {"type": "string", "default": "/workspace"},
+          "workingDirectory": {"type": "string", "default": "/tmp"},
           "timeoutSeconds": {"type": "integer", "default": 120},
           "registerArtifact": {"type": "boolean", "default": false}
         },

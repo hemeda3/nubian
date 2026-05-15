@@ -40,7 +40,7 @@ public class ComputerAgentArtifacts implements SandboxArtifacts {
     private static final Logger log = LoggerFactory.getLogger(ComputerAgentArtifacts.class);
 
     /** Root directories scanned when listing artifacts — mirrors FirecrackerSandboxArtifacts. */
-    private static final List<String> ARTIFACT_ROOTS = List.of("/workspace", "/downloads", "/uploads");
+    private static final List<String> ARTIFACT_ROOTS = List.of("/tmp", "/downloads", "/uploads");
 
     private final String providerId;
     private final ComputerAgentClient client;

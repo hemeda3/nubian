@@ -131,7 +131,7 @@ public class ComputerDemoController {
     public Map<String, Object> listFiles(
             @PathVariable String providerId,
             @PathVariable String sessionId,
-            @RequestParam(defaultValue = "/workspace") String path) {
+            @RequestParam(defaultValue = "/tmp") String path) {
         List<SandboxFile> files = await(fileSystem(providerId).listFiles(sessionId, path));
         return Map.of(
                 "ok", true,

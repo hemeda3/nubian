@@ -5251,7 +5251,7 @@ public final class Agent {
                 case "clipboard_text":
                     return tools.clipboardText();
                 case "ls": {
-                    String path = args.path("dir").asText(args.path("path").asText("/workspace"));
+                    String path = args.path("dir").asText(args.path("path").asText("/tmp"));
                     return tools.filesList(path);
                 }
                 case "file_stat": {
@@ -5265,7 +5265,7 @@ public final class Agent {
                     return tools.readFileText(path);
                 }
                 case "find_recent": {
-                    String dir = args.path("dir").asText("/workspace");
+                    String dir = args.path("dir").asText("/tmp");
                     long since = args.path("since_ms").asLong(0);
                     String listJson = tools.filesList(dir);
                     try {

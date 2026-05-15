@@ -172,7 +172,7 @@ public class Sandbox {
 
     public Response filesList(String path) {
         return getString("/memory/files/list?path="
-                + URLEncoder.encode(path == null ? "/workspace" : path, StandardCharsets.UTF_8));
+                + URLEncoder.encode(path == null ? "/tmp" : path, StandardCharsets.UTF_8));
     }
 
     public Response fileStat(String path) {

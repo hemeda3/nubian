@@ -409,7 +409,7 @@ public class ComputerAgentClient {
     public ExecResult exec(String cmd, String cwd, long timeoutMs) {
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("cmd", cmd);
-        payload.put("cwd", cwd != null ? cwd : "/workspace");
+        payload.put("cwd", cwd != null ? cwd : "/tmp");
         payload.put("timeout_ms", timeoutMs);
         HttpRequest req = post("/shell/exec", toJson(payload, "/shell/exec"));
         String response = sendString(req, "/shell/exec");

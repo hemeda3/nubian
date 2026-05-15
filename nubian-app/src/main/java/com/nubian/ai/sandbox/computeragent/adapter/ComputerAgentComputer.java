@@ -125,7 +125,7 @@ public class ComputerAgentComputer implements SandboxComputer {
         );
 
         List<SandboxComputerEnvironment.Directory> directories = List.of(
-                directory("workspace", "/workspace", "user files and generated output"),
+                directory("workspace", "/tmp", "user files and generated output"),
                 directory("downloads", "/downloads", "browser downloads"),
                 directory("uploads", "/uploads", "user uploaded files"),
                 directory("logs", "/logs", "screenshots, actions, and terminal output"),

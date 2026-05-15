@@ -59,3 +59,7 @@ qodana.report/
 deployment/vms/
 *.qcow2
 *.qcow2.zip
+
+# Local dev env vars / secrets — never commit
+.env
+.env.*

@@ -60,7 +60,7 @@ public class ComputerAgentTerminal implements SandboxTerminal {
         }
 
         return CompletableFuture.supplyAsync(() -> {
-            String cwd = isBlank(command.workingDirectory()) ? "/workspace" : command.workingDirectory();
+            String cwd = isBlank(command.workingDirectory()) ? "/tmp" : command.workingDirectory();
             long timeoutMs = command.timeout() != null ? command.timeout().toMillis() : 120_000L;
             Instant start = Instant.now();
             try {

@@ -3396,6 +3396,20 @@
       });
     }
 
+    /* When ?provider=<id> is present, hide the Start buttons for other providers. */
+    (function filterProviderButtons() {
+      const wanted = requestedProviderId();
+      if (!wanted) return;
+      const map = {
+        'firecracker': els.createFlyvmBtn,
+        'computer-agent': els.createComputerAgentBtn,
+        'android-agent': els.createAndroidBtn,
+      };
+      Object.entries(map).forEach(([id, btn]) => {
+        if (btn && id !== wanted) btn.style.display = 'none';
+      });
+    })();
+
     /* ---------------- Benchmark task picker ---------------- */
     if (els.suitePicker) {
       const tasksById = new Map();

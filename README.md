@@ -62,7 +62,7 @@ $EDITOR config/application-dev.properties   # set GEMINI_API_KEY or OPENROUTER_A
 docker compose up -d sandbox
 
 # 4. Deploy the UI-TARS grounder on a GPU VM (required for grounded clicks)
-#    See deployment/GROUNDER_DEPLOY.md. Set nubian.uground.enabled=false to skip.
+#    See deployment/GROUNDER_DEPLOY.md.
 
 # 5. Start the agent
 ./start.sh

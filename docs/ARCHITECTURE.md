@@ -10,7 +10,7 @@
 | **UGroundClient** | HTTP client for the pixel grounder. Sends `{image, description}` → gets `(x, y)`. | Inside Agent |
 | **Tools** | Action dispatcher. Maps `{action, args}` → `POST /hands/action`. | Inside Agent |
 | **LLM (Gemini 3.1 Pro Preview)** | Three roles: Planner, Verifier, Supervisor. | api.google.com (or OpenRouter) |
-| **UI-TARS-1.5-7B grounder** | vLLM serving UI-TARS for description → coords. | GPU VM (any cloud) |
+| **UI-TARS-1.7B grounder** | vLLM serving UI-TARS for description → coords. | GPU VM (any cloud) |
 | **Sandbox** | `happysixd/osworld-docker` — QEMU-in-Docker Ubuntu 22.04 VM. | Hetzner, GCP spot, or local |
 | **Sandbox controller** | Python Flask server inside the guest VM at `20.20.20.21:6090`. Endpoints: `/eyes/*`, `/hands/*`, `/memory/*`. | Inside the guest VM |
 | **nginx (in container)** | Reverse-proxies `/agent/*` → guest VM `:6090`. Also fronts `:5000` OSWorld API + `:8006` noVNC. | Sandbox container |

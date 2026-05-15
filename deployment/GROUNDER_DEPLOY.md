@@ -2,7 +2,7 @@
 
 The agent's `click` actions need pixel coordinates. The planner LLM emits a
 target *description* ("the Apply button near the bottom right") and the
-grounder model converts that into `(x, y)`. We use **UI-TARS-1.5-7B** served
+grounder model converts that into `(x, y)`. We use **UI-TARS-1.7B** served
 by **vLLM** on any GPU VM.
 
 Set `nubian.uground.enabled=false` if you want to skip this — the agent still
@@ -12,7 +12,7 @@ runs, just without grounded clicks (it falls back to hotkeys and direct text).
 
 | Spec | Minimum | Notes |
 |------|---------|-------|
-| GPU VRAM | 24 GB | UI-TARS-1.5-7B fits at FP16; 48 GB is comfortable |
+| GPU VRAM | 24 GB | UI-TARS-1.7B fits at FP16; 48 GB is comfortable |
 | CUDA | 12.4+ (13.0 preferred) | vLLM 0.20+ ships against CUDA 13 |
 | Disk | 32 GB | Model weights + HF cache |
 

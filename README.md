@@ -128,8 +128,6 @@ nubian.agent.best-of-n=1                       # >1 samples N candidates per tur
 
 
 
-<img src="docs/architecture.svg" width="100%" alt="Nubian Agent — architecture" />
-
 ---
 
 ## License

@@ -1,4 +1,4 @@
-<img width="170" height="150" alt="Nubian logo" src="https://github.com/user-attachments/assets/1975c24b-013e-42e8-a70e-3cf1b279141a" />
+
 
 # Nubian (WIP)
 **Autonomous computer-use agent**
